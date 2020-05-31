@@ -12,20 +12,20 @@
 
 # theme                  : "minimal-mistakes-jekyll"
 # remote_theme           : "mmistakes/minimal-mistakes"
-minimal_mistakes_skin    : "default" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+minimal_mistakes_skin    : "air" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
 
 # Site Settings
 locale                   : "en-US"
-title                    : "Developer Blogs"
+title                    : "DevBlogs"
 title_separator          : "-"
 subtitle                 : "Projects in details"
 name                     : "Bibyutatsu"
-description              : "Website to showcase the projects I amworking on"
-url                      : "https://Bibyutatsu.github.io/devblogs"
-baseurl                  : ""
-repository               : "Bibyutatsu/DevBlogs"
-teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
-logo                     : # path of logo image to display in the masthead, e.g. "/assets/images/88x88.png"
+description              : "Website to showcase the projects I am working on"
+url                      : "https://Bibyutatsu.github.io"
+baseurl                  : "/DevBlogs"
+repository               : "Bibyutatsu/minimal-mistakes"
+teaser                   : "/assets/images/lead-bg-1.jpg"
+logo                     : "/assets/images/icon.webp"
 masthead_title           : # overrides the website title displayed in the masthead, use " " for no title
 # breadcrumbs            : false # true, false (default)
 words_per_minute         : 200
@@ -51,7 +51,7 @@ reCaptcha:
   secret                 :
 atom_feed:
   path                   : # blank (default) uses feed.xml
-search                   : # true, false (default)
+search                   : true
 search_full_content      : # true, false (default)
 search_provider          : # lunr (default), algolia, google
 algolia:
@@ -79,9 +79,13 @@ og_image                 : # Open Graph/Twitter default site image
 # For specifying social profiles
 # - https://developers.google.com/structured-data/customize/social-profiles
 social:
-  type                   : # Person or Organization (defaults to Person)
-  name                   : # If the user or organization name differs from the site's name
-  links: # An array of links to social media profiles
+  type                   : Person
+  name                   : Bibhash Chandra Mitra
+  links: 
+    - "https://www.facebook.com/coolbibhash"
+    - "https://www.linkedin.com/in/bibhashmitra220896"
+    - "https://github.com/Bibyutatsu"
+    - "https://bibyutatsu.github.io"
 
 # Analytics
 analytics:
@@ -93,53 +97,34 @@ analytics:
 
 # Site Author
 author:
-  name             : "Bibyutatsu"
-  avatar           : # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "I am an **amazing** person."
-  location         : "Somewhere"
-  email            :
+  name             : "Bibhash Mitra"
+  avatar           : "/assets/images/img_profile.jpg"
+  bio              : "Associate Data Scientist with a passion in the field of Artificial Intelligence and Algorithms. Graduated with a Major in Aerospace Engineering and a Minor in Computer Science Engineering. Currently working on critical projects like Novel Drug discovery with AI and Clustering Graph Networks for Entity Normalisation. Professionally skilled in OCR Engines, Deep Learning, data exploration and visualization, predictive modelling and optimization."
+  location         : "Pune, India"
+  email            : "bibhashm220896@gmail.com"
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
-      # url: "mailto:your.name@email.com"
+      url: "bibhashm220896@gmail.com"
     - label: "Website"
       icon: "fas fa-fw fa-link"
-      # url: "https://your-website.com"
-    - label: "Twitter"
-      icon: "fab fa-fw fa-twitter-square"
-      # url: "https://twitter.com/"
+      url: "https://bibyutatsu.github.io"
     - label: "Facebook"
       icon: "fab fa-fw fa-facebook-square"
-      # url: "https://facebook.com/"
+      url: "https://www.facebook.com/coolbibhash"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
-      # url: "https://github.com/"
-    - label: "Instagram"
-      icon: "fab fa-fw fa-instagram"
-      # url: "https://instagram.com/"
+      url: "https://github.com/Bibyutatsu"
 
 # Site Footer
 footer:
   links:
-    - label: "Twitter"
-      icon: "fab fa-fw fa-twitter-square"
-      # url:
     - label: "Facebook"
       icon: "fab fa-fw fa-facebook-square"
-      # url:
+      url: "https://www.facebook.com/coolbibhash"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
-      # url:
-    - label: "GitLab"
-      icon: "fab fa-fw fa-gitlab"
-      # url:
-    - label: "Bitbucket"
-      icon: "fab fa-fw fa-bitbucket"
-      # url:
-    - label: "Instagram"
-      icon: "fab fa-fw fa-instagram"
-      # url:
-
+      url: "https://github.com/Bibyutatsu"
 
 # Reading Files
 include:
