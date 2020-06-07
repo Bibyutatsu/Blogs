@@ -18,7 +18,7 @@ minimal_mistakes_skin    : "air" # "air", "aqua", "contrast", "dark", "dirt", "n
 locale                   : "en-US"
 title                    : "DevBlogs"
 title_separator          : "-"
-subtitle                 : "Projects in details"
+subtitle                 : "Bibyutatsu's Projects in details"
 name                     : "Bibyutatsu"
 description              : "Website to showcase the projects I am working on"
 url                      : "https://Bibyutatsu.github.io"
@@ -99,7 +99,7 @@ analytics:
 author:
   name             : "Bibhash Mitra"
   avatar           : "/assets/images/img_profile.jpg"
-  bio              : "Associate Data Scientist with a passion in the field of Artificial Intelligence and Algorithms. Graduated with a Major in Aerospace Engineering and a Minor in Computer Science Engineering. Currently working on critical projects like Novel Drug discovery with AI and Clustering Graph Networks for Entity Normalisation. Professionally skilled in OCR Engines, Deep Learning, data exploration and visualization, predictive modelling and optimization."
+  bio              : "Associate Data Scientist with a passion in the field of Artificial Intelligence and Algorithms."
   location         : "Pune, India"
   email            : "bibhashm220896@gmail.com"
   links:

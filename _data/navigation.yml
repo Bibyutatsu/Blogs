@@ -1,10 +1,11 @@
 # main links
 main:
-  - title: "Home"
+  - title: "Blog"
+    url: "/devlogs/"
+    description: "Some projects I have been working on"
+  - title: "About Me"
     url: https://bibyutatsu.github.io/
     description: "Go back to the home page"
-  # - title: "About"
-  #   url: https://mmistakes.github.io/minimal-mistakes/about/
   # - title: "Sample Posts"
   #   url: /year-archive/
   # - title: "Sample Collections"
