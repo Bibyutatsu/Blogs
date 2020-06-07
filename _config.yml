@@ -256,7 +256,7 @@ defaults:
   # _posts
   - scope:
       path: ""
-      type: single
+      type: posts
     values:
       layout: single
       author_profile: true
