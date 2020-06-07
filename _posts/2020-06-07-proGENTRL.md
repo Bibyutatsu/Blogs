@@ -1,6 +1,8 @@
 ---
 layout: post
+author_profile: true
 title:  proGENTRL
+tags: [ml, optimization, GENTRL, pytorch-lightning]
 ---
 
 # Pro Generative Tensorial Reinforcement Learning (proGENTRL)
