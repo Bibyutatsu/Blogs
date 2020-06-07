@@ -1,5 +1,4 @@
 ---
-layout: single
 author_profile: true
 title:  proGENTRL
 tags: [ml, optimization, GENTRL, pytorch-lightning]
