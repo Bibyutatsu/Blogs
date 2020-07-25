@@ -58,7 +58,7 @@ The basic flow of the model is:
 ## Examples
 Below we show examples of generated molecules (more samples [here](https://github.com/Bibyutatsu/GENTRL/blob/master/images/Sampling_big.png)). You can find more explanations in my originarlly forked Repo of GENTRL please visit [here](https://github.com/Bibyutatsu/GENTRL)
 
-![Sampling](https://github.com/Bibyutatsu/GENTRL/blob/master/images/Sampling.jpeg)
+![Sampling](https://raw.githubusercontent.com/Bibyutatsu/GENTRL/master/images/Sampling.jpeg)
 
 
 Supporting Information for the paper _"[Deep learning enables rapid identification of potent DDR1 kinase inhibitors](https://www.nature.com/articles/s41587-019-0224-x)"_.
