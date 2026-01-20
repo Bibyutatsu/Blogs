@@ -1,0 +1,101 @@
+// Glassmorphism Effects - Matching Portfolio
+// ===========================================
+
+// Glass Card Mixin
+@mixin glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+
+// Light Mode Glass
+@mixin glass-card-light {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 2px solid rgba(13, 53, 128, 0.15);
+    box-shadow: 0 10px 40px rgba(13, 53, 128, 0.15);
+    border-radius: 12px;
+}
+
+// Glass Card Class
+.glass-card {
+    @include glass-card;
+    transition: all 0.5s ease;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+}
+
+// Light mode overrides
+html[data-theme='light'] .glass-card,
+html:not([data-theme='dark']) .glass-card {
+    @include glass-card-light;
+
+    &:hover {
+        box-shadow: 0 15px 50px rgba(13, 53, 128, 0.2);
+    }
+}
+
+// Glassmorphic Button
+.btn-glassy {
+    display: inline-block;
+    padding: 10px 24px;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    text-decoration: none;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        color: #fff;
+    }
+}
+
+html[data-theme='light'] .btn-glassy {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    color: var(--base-color);
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--base-color-hover);
+    }
+}
+
+// Primary CTA Button
+.btn-primary {
+    display: inline-block;
+    color: #fff;
+    padding: 15px 25px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 30px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: all 0.5s ease;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+        color: #fff;
+        background: linear-gradient(to right, var(--accent-color), var(--accent-color-hover));
+        border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(210, 41, 45, 0.4);
+    }
+}

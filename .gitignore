@@ -1,8 +1,6 @@
-# Vim
+# Editors
 *~
 *.sw[p_]
-
-# Sublime Text
 *.sublime-project
 *.sublime-workspace
 
@@ -12,18 +10,23 @@
 Gemfile.lock
 **/vendor/bundle
 
-# Node.js and NPM
-node_modules
+# Node.js (not used but just in case)
+node_modules/
 npm-debug.log*
-package-lock.json
-codekit-config.json
 
 # macOS
 .DS_Store
+.AppleDouble
+.LSOverride
 
 # Jekyll generated files
-.jekyll-cache
+.jekyll-cache/
 .jekyll-metadata
-.sass-cache
-_asset_bundler_cache
-_site
+.sass-cache/
+_asset_bundler_cache/
+_site/
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace

@@ -1,117 +1,63 @@
-# Welcome to Jekyll!
-#
-# This config file is meant for settings that affect your entire site, values
-# which you are expected to set up once and rarely need to edit after that.
-# For technical reasons, this file is *NOT* reloaded automatically when you use
-# `jekyll serve`. If you change this file, please restart the server process.
-
-# Theme Settings
-#
-# Review documentation to determine if you should use `theme` or `remote_theme`
-# https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/#installing-the-theme
-
-# theme                  : "minimal-mistakes-jekyll"
-# remote_theme           : "mmistakes/minimal-mistakes"
-minimal_mistakes_skin    : "air" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
-
 # Site Settings
 locale                   : "en-US"
-title                    : "DevBlogs"
+title                    : "Bibhash's Dev Blog"
 title_separator          : "-"
-subtitle                 : "Bibyutatsu's Projects in details"
-name                     : "Bibyutatsu"
-description              : "Website to showcase the projects I am working on"
+subtitle                 : "AI/ML Insights & Projects"
+name                     : "Bibhash Mitra"
+description              : "Technical blog by Bibhash Mitra covering AI, Machine Learning, Deep Learning, and Data Science projects."
 url                      : "https://Bibyutatsu.github.io"
-baseurl                  : "/"
+baseurl                  : "/Blogs"
 repository               : "Bibyutatsu/Blogs"
 teaser                   : "/assets/images/lead-bg-1.jpg"
 logo                     : "/assets/images/icon.webp"
-masthead_title           : # overrides the website title displayed in the masthead, use " " for no title
-# breadcrumbs            : false # true, false (default)
 words_per_minute         : 200
-comments:
-  provider               : # false (default), "disqus", "discourse", "facebook", "staticman", "staticman_v2", "utterances", "custom"
-  disqus:
-    shortname            : # https://help.disqus.com/customer/portal/articles/466208-what-s-a-shortname-
-  discourse:
-    server               : # https://meta.discourse.org/t/embedding-discourse-comments-via-javascript/31963 , e.g.: meta.discourse.org
-  facebook:
-    # https://developers.facebook.com/docs/plugins/comments
-    appid                :
-    num_posts            : # 5 (default)
-    colorscheme          : # "light" (default), "dark"
-  utterances:
-    theme                : # "github-light" (default), "github-dark"
-    issue_term           : # "pathname" (default)
-  staticman:
-    branch               : # "master"
-    endpoint             : # "https://{your Staticman v3 API}/v3/entry/github/"
-reCaptcha:
-  siteKey                :
-  secret                 :
-atom_feed:
-  path                   : # blank (default) uses feed.xml
+
+# Theme Settings
+minimal_mistakes_skin    : "dark"
+
+# Search
 search                   : true
-search_full_content      : # true, false (default)
-search_provider          : # lunr (default), algolia, google
-algolia:
-  application_id         : # YOUR_APPLICATION_ID
-  index_name             : # YOUR_INDEX_NAME
-  search_only_api_key    : # YOUR_SEARCH_ONLY_API_KEY
-  powered_by             : # true (default), false
-google:
-  search_engine_id       : # YOUR_SEARCH_ENGINE_ID
-  instant_search         : # false (default), true
+search_full_content      : false
+search_provider          : lunr
+
 # SEO Related
 google_site_verification :
 bing_site_verification   :
-yandex_site_verification :
-naver_site_verification  :
 
 # Social Sharing
 twitter:
   username               :
-facebook:
-  username               :
-  app_id                 :
-  publisher              :
-og_image                 : # Open Graph/Twitter default site image
-# For specifying social profiles
-# - https://developers.google.com/structured-data/customize/social-profiles
+og_image                 : "https://raw.githubusercontent.com/Bibyutatsu/Bibyutatsu.github.io/master/images/img_profile.jpg"
+
 social:
   type                   : Person
-  name                   : Bibhash Chandra Mitra
-  links: 
-    - "https://www.facebook.com/coolbibhash"
-    - "https://www.linkedin.com/in/bibhashmitra220896"
+  name                   : Bibhash Mitra
+  links:
+    - "https://www.linkedin.com/in/bibhashm/"
     - "https://github.com/Bibyutatsu"
     - "https://bibyutatsu.github.io"
 
 # Analytics
 analytics:
-  provider               : false # false (default), "google", "google-universal", "custom"
-  google:
-    tracking_id          :
-    anonymize_ip         : # true, false (default)
-
+  provider               : false
 
 # Site Author
 author:
   name             : "Bibhash Mitra"
-  avatar           : "/assets/images/img_profile.jpg"
-  bio              : "Associate Data Scientist with a passion in the field of Artificial Intelligence and Algorithms."
+  avatar           : "https://raw.githubusercontent.com/Bibyutatsu/Bibyutatsu.github.io/master/images/img_profile.jpg"
+  bio              : "Senior Data Scientist & AI/ML Expert with 6+ years of experience in Generative AI, NLP, Computer Vision, and Quantum Computing."
   location         : "Pune, India"
-  email            : "bibhashm220896@gmail.com"
+  email            : "bibhash.c.mitra@gmail.com"
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
-      url: "bibhashm220896@gmail.com"
-    - label: "Website"
+      url: "mailto:bibhash.c.mitra@gmail.com"
+    - label: "Portfolio"
       icon: "fas fa-fw fa-link"
       url: "https://bibyutatsu.github.io"
-    - label: "Facebook"
-      icon: "fab fa-fw fa-facebook-square"
-      url: "https://www.facebook.com/coolbibhash"
+    - label: "LinkedIn"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/bibhashm/"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/Bibyutatsu"
@@ -119,9 +65,9 @@ author:
 # Site Footer
 footer:
   links:
-    - label: "Facebook"
-      icon: "fab fa-fw fa-facebook-square"
-      url: "https://www.facebook.com/coolbibhash"
+    - label: "LinkedIn"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/bibhashm/"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/Bibyutatsu"
@@ -155,14 +101,11 @@ exclude:
   - Rakefile
   - README
   - tmp
-  - /docs # ignore Minimal Mistakes /docs
-  - /test # ignore Minimal Mistakes /test
 keep_files:
   - .git
   - .svn
 encoding: "utf-8"
 markdown_ext: "markdown,mkdown,mkdn,mkd,md"
-
 
 # Conversion
 markdown: kramdown
@@ -170,7 +113,6 @@ highlighter: rouge
 lsi: false
 excerpt_separator: "\n\n"
 incremental: false
-
 
 # Markdown Processing
 kramdown:
@@ -183,21 +125,18 @@ kramdown:
   smart_quotes: lsquo,rsquo,ldquo,rdquo
   enable_coderay: false
 
-
 # Sass/SCSS
 sass:
   sass_dir: _sass
-  style: compressed # https://sass-lang.com/documentation/file.SASS_REFERENCE.html#output_style
-
+  style: compressed
 
 # Outputting
 permalink: /:categories/:title/
-paginate: 5 # amount of posts to show
+paginate: 5
 paginate_path: /page:num/
-timezone: # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+timezone: Asia/Kolkata
 
-
-# Plugins (previously gems:)
+# Plugins
 plugins:
   - jekyll-paginate
   - jekyll-sitemap
@@ -205,7 +144,6 @@ plugins:
   - jekyll-feed
   - jekyll-include-cache
 
-# mimic GitHub Pages with --safe
 whitelist:
   - jekyll-paginate
   - jekyll-sitemap
@@ -213,43 +151,19 @@ whitelist:
   - jekyll-feed
   - jekyll-include-cache
 
-
 # Archives
-#  Type
-#  - GitHub Pages compatible archive pages built with Liquid ~> type: liquid (default)
-#  - Jekyll Archives plugin archive pages ~> type: jekyll-archives
-#  Path (examples)
-#  - Archive page should exist at path when using Liquid method or you can
-#    expect broken links (especially with breadcrumbs enabled)
-#  - <base_path>/tags/my-awesome-tag/index.html ~> path: /tags/
-#  - <base_path>/categories/my-awesome-category/index.html ~> path: /categories/
-#  - <base_path>/my-awesome-category/index.html ~> path: /
 category_archive:
   type: liquid
   path: /categories/
 tag_archive:
   type: liquid
   path: /tags/
-# https://github.com/jekyll/jekyll-archives
-# jekyll-archives:
-#   enabled:
-#     - categories
-#     - tags
-#   layouts:
-#     category: archive-taxonomy
-#     tag: archive-taxonomy
-#   permalinks:
-#     category: /categories/:name/
-#     tag: /tags/:name/
-
 
 # HTML Compression
-# - https://jch.penibelst.de/
 compress_html:
   clippings: all
   ignore:
     envs: development
-
 
 # Defaults
 defaults:
@@ -261,7 +175,7 @@ defaults:
       layout: single
       author_profile: true
       read_time: true
-      comments: true
+      comments: false
       share: true
       related: true
 

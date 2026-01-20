@@ -1,65 +1,238 @@
 ---
+layout: single
 author_profile: true
-title:  proGENTRL
-tags: [dl, deep learning, pytorch, optimization, GENTRL, pytorch-lightning]
+title: "proGENTRL: PyTorch Lightning Implementation for Molecule Generation"
+date: 2020-06-07
+last_modified_at: 2025-01-21
+categories:
+  - Deep Learning
+  - Drug Discovery
+tags:
+  - deep-learning
+  - pytorch
+  - pytorch-lightning
+  - generative-ai
+  - drug-discovery
+  - VAE
+  - reinforcement-learning
+  - SMILES
+header:
+  teaser: "/assets/images/ml_front_reshaped_trans.png"
+  overlay_color: "#0f172a"
+  overlay_filter: "0.6"
+excerpt: "A PyTorch Lightning implementation of GENTRL for generating novel molecules using VAE and Reinforcement Learning."
+toc: true
+toc_label: "Contents"
+toc_icon: "flask"
+classes: wide
 ---
 
-In this Blogpost I would like to talk about one of my projects I am currently working on [Pro Generative Tensorial Reinforcement Learning AKA proGENTRL](https://github.com/Bibyutatsu/proGENTRL).
-This is a [Pytorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning) implementation of [*insilo medicine's* **GENTRL**](https://github.com/insilicomedicine/gentrl). 
+## 🚀 Introduction
 
-Recently Pytorch Lightning has gained much popularity due to its lightweight framework and flexibility with handling multiple devices from a single GPU to a HPC cluster. So in order to maximize the efficiency of using GENTRL on multi-GPU environment I have implemented this pytorch lightning code.
+**proGENTRL** is a PyTorch Lightning implementation of *Generative Tensorial Reinforcement Learning* (GENTRL) — a deep generative model designed to explore chemical space and propose novel molecules with desirable properties, such as synthetic feasibility and biological activity.
 
-# Pro Generative Tensorial Reinforcement Learning (proGENTRL)
+This blog post walks through what proGENTRL is, how it works, what's inside the repository, and how you can get started building and experimenting with it.
 
-## Installation
+**Repository**: [github.com/Bibyutatsu/proGENTRL](https://github.com/Bibyutatsu/proGENTRL)
 
-#### Step 1 :
-Make a new conda environment and install RDKit.
-```
-conda create -c rdkit -n my-rdkit-env rdkit
-```
-Then activate this new environment.
-```
-conda activate my-rdkit-env
-```
-*Note :*  Make sure that the python3 version is 3.5 or higher and pip3 is installed
+---
 
-#### Step 2 :
-Inside this environment install proGENTRL.
+## 🧠 What is GENTRL?
+
+Generative Tensorial Reinforcement Learning (GENTRL) is a two-stage model developed for **de novo small-molecule design**. The original research demonstrated that GENTRL could:
+
+- Optimize synthetic feasibility, novelty, and biological activity of molecules.
+- Generate novel small-molecule inhibitors for the DDR1 kinase target within a matter of weeks.
+
+The model combines a **Variational Autoencoder (VAE)** with **reinforcement learning (RL)**. Initially, the VAE is trained on a dataset of molecules, learning a smooth latent representation of chemical space. Then, an RL agent explores this latent space to find points that decode into molecules with high *reward* as defined by property-based scoring.
+
+> **Research Paper**: [Deep learning enables rapid identification of potent DDR1 kinase inhibitors](https://www.nature.com/articles/s41587-019-0224-x) - *Nature Biotechnology, 2019*
+
+---
+
+## 🧠 Why It Matters
+
+Chemical space — the total set of possible small molecules — is astronomically large. Traditional in-silico screening methods can only explore a tiny fraction of this. Models like GENTRL use deep learning to **generalize learning from existing molecules** and guide exploration toward regions that satisfy multiple objectives (like drug-likeness, activity against a target, or synthesis feasibility).
+
+This makes such models powerful tools in **drug discovery**, materials design, and other chemistry-driven fields.
+
+---
+
+## 📦 What's Inside the proGENTRL Repository
+
+Here's a high-level look at the repository structure:
+
 ```
+proGENTRL/
+├─ images/              # Images shown in README
+├─ progentrl/           # Core model and training implementation
+├─ Example.ipynb        # Demo notebook with workflow
+├─ README.md            # Project information & installation
+├─ setup.py             # Install script
+└─ LICENSE              # MIT License
+```
+
+### Key Components
+
+| Component | Description |
+|-----------|-------------|
+| **VAE Module** | Encodes/decodes SMILES strings to/from latent space |
+| **RL Module** | Reinforcement learning for latent space optimization |
+| **Tokenizer** | Custom SMILES tokenizer for molecular strings |
+| **Trainer** | PyTorch Lightning training loops |
+
+---
+
+## 🛠️ Installation & Setup
+
+Follow these steps to get proGENTRL running:
+
+### Step 1 — Create Conda Environment
+
+Install RDKit, which is required for molecule handling:
+
+```bash
+conda create -c rdkit -n progentrl-env rdkit
+conda activate progentrl-env
+```
+
+### Step 2 — Install proGENTRL
+
+**Option A**: Install via pip:
+```bash
+pip install progentrl
+```
+
+**Option B**: Install from source:
+```bash
 git clone https://github.com/Bibyutatsu/proGENTRL.git
 cd proGENTRL
 python3 setup.py install
 ```
 
-#### Step 3 :
-Then I will suggest you install pytorch's latest version according to your cuda version (For e.g. 10.2)
-```
+### Step 3 — Install PyTorch
+
+Install PyTorch with the appropriate CUDA version:
+
+```bash
 python3 -m pip uninstall torch torchvision
-conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
+conda install pytorch torchvision cudatoolkit=11.3 -c pytorch
 ```
 
-#### Step 4 : (Optional)
-Making a new **Kernel** for jupyter notebook is recommended. For making a new kernel please follow these steps.
-```
+*Replace `cudatoolkit=11.3` with your CUDA version.*
+
+### Step 4 — (Optional) Setup Jupyter Kernel
+
+```bash
 python3 -m pip install ipykernel
-python3 -m ipykernel install --user --name rdkit_kernel
+python3 -m ipykernel install --user --name progentrl
 ```
-Now when you open jupyter notebook. Go to **Change Kernel** > **rdkit_kernel**
 
-With these the installation is over and now we are ready to run the `Example.ipynb` notebook provided in the Repo.
+This makes it easy to run notebooks with the correct environment.
 
-## Usage
+---
 
-I have summarised the basic pipeline for using this module in `Example.ipynb`. This notebook is a good starting point to look at how proGENTRL works. It incorporates all the steps from *VAE Training* to *Reinforcement Learning* and finally *Sampling* or generation of new molecules in the form of SMILES strings.
+## 🧪 Example Workflow
 
-The basic flow of the model is:
-**VAE Train** :arrow_right: **Reinforcement Learning** :arrow_right: **Sampling**
-## Examples
-Below we show examples of generated molecules (more samples [here](https://github.com/Bibyutatsu/GENTRL/blob/master/images/Sampling_big.png)). You can find more explanations in my originarlly forked Repo of GENTRL please visit [here](https://github.com/Bibyutatsu/GENTRL)
+The included `Example.ipynb` demonstrates the core workflow:
 
-![Sampling](https://raw.githubusercontent.com/Bibyutatsu/GENTRL/master/images/Sampling.jpeg)
+```
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────────────────┐     ┌─────────────────┐
+│  Pretrain VAE   │ ──▶ │  Freeze Weights  │ ──▶ │  Reinforcement Learning │ ──▶ │  Sample SMILES  │
+└─────────────────┘     └──────────────────┘     └─────────────────────────┘     └─────────────────┘
+```
 
+1. **Pretrain the VAE**: Learn a latent representation of molecules.
+2. **Freeze VAE weights**: Lock them except for the prior.
+3. **Run Reinforcement Learning**: Search the latent space for high-reward vectors.
+4. **Sample SMILES strings**: Decode optimized latent points into candidate molecules.
 
-Supporting Information for the paper _"[Deep learning enables rapid identification of potent DDR1 kinase inhibitors](https://www.nature.com/articles/s41587-019-0224-x)"_.
-Original [Repo](https://github.com/insilicomedicine/gentrl)
+This notebook is the recommended starting point to understand how the model flows from training to molecule generation.
+
+---
+
+## 📘 Core Concepts Explained
+
+### Variational Autoencoder (VAE)
+
+A VAE encodes molecules (e.g., SMILES strings) into a continuous latent space and decodes back to molecule representations. The learning objective encourages the latent space to be smooth and meaningful.
+
+```
+SMILES Input → Encoder → Latent Space (z) → Decoder → SMILES Output
+     ↓                        ↓                           ↓
+"CCO"        →   [0.2, -0.5, 1.3, ...]   →           "CCO"
+```
+
+### Reinforcement Learning (RL) Optimization
+
+Once pretrained, the VAE's weights are mostly frozen. Reinforcement learning is applied on top of the latent representation:
+
+- A **reward function** guides the agent toward latent points that decode into molecules with desired properties.
+- The exploration is driven by a **reward score** (e.g., drug-likeness, synthetic accessibility).
+
+---
+
+## 🧭 Real-World Performance
+
+The original GENTRL research found potent DDR1 inhibitors in a short timeframe — generating molecules with promising activity and validating them experimentally in biochemical and cellular assays.
+
+### Generated Molecules Examples
+
+Below are examples of molecules generated by the model:
+
+![Generated Molecules](https://raw.githubusercontent.com/Bibyutatsu/GENTRL/master/images/Sampling.jpeg)
+
+*More samples available [here](https://github.com/Bibyutatsu/GENTRL/blob/master/images/Sampling_big.png)*
+
+This provides an exciting example of how generative models can accelerate the early stages of drug discovery.
+
+---
+
+## 🧠 Extending proGENTRL
+
+Here are ways to enhance the project:
+
+### 🎯 Better Reward Functions
+
+Design multi-objective reward functions that incorporate:
+
+- Predicted biological target affinity
+- Synthetic accessibility scores
+- Drug-like metrics (e.g., QED, logP, Lipinski scores)
+
+### ⚙️ Advanced Generative Models
+
+Beyond VAEs, you can explore:
+
+- **Transformer-based generative models** — Attention mechanisms for sequential SMILES
+- **Graph neural networks** — Molecular graph representations
+- **Diffusion models** — State-of-the-art generative approach
+
+These can bring richer representations and better optimization.
+
+---
+
+## 💡 Final Thoughts
+
+The proGENTRL repository provides a strong starting point to experiment with deep generative models and reinforcement learning in chemistry. Whether you're exploring de novo drug design or generative modeling, this PyTorch Lightning implementation gives you a practical and modifiable codebase to build from.
+
+### Why PyTorch Lightning?
+
+PyTorch Lightning offers:
+- **Clean separation** of research code from engineering
+- **Multi-GPU support** out of the box
+- **Reproducibility** through standardized training loops
+- **Reduced boilerplate** — focus on the model, not infrastructure
+
+---
+
+## 📚 Resources
+
+- **proGENTRL Repository**: [github.com/Bibyutatsu/proGENTRL](https://github.com/Bibyutatsu/proGENTRL)
+- **Original GENTRL**: [github.com/insilicomedicine/gentrl](https://github.com/insilicomedicine/gentrl)
+- **My GENTRL Fork**: [github.com/Bibyutatsu/GENTRL](https://github.com/Bibyutatsu/GENTRL)
+- **Research Paper**: [Nature Biotechnology Publication](https://www.nature.com/articles/s41587-019-0224-x)
+
+---
+
+*Originally published: June 7, 2020 | Updated: January 2025*

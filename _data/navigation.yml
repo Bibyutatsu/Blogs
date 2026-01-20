@@ -1,14 +1,7 @@
-# main links
+# Main navigation links
 main:
-  - title: "Blog"
-    url: "/devlogs/"
-    description: "Some projects I have been working on"
-  - title: "About Me"
+  - title: "Home"
+    url: /
+  - title: "Portfolio"
     url: https://bibyutatsu.github.io/
-    description: "Go back to the home page"
-  # - title: "Sample Posts"
-  #   url: /year-archive/
-  # - title: "Sample Collections"
-  #   url: /collection-archive/
-  # - title: "Sitemap"
-  #   url: /sitemap/
+    description: "Visit my portfolio website"

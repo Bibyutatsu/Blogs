@@ -1,0 +1,357 @@
+// Custom Theme Overrides - Matching Portfolio Design System
+// ==========================================================
+
+@import 'custom/variables';
+@import 'custom/glassmorphism';
+@import 'custom/blog-home';
+
+// Base Typography
+html {
+    font-family: $font-body;
+}
+
+body {
+    background: var(--background);
+    color: var(--text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Dark mode background gradient
+[data-theme="dark"] body {
+    background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
+    background-attachment: fixed;
+}
+
+// Light mode background gradient  
+html:not([data-theme="dark"]) body {
+    background: radial-gradient(circle at center, #f8fafc 0%, #e2e8f0 100%);
+    background-attachment: fixed;
+}
+
+// Headings
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: $font-heading;
+    color: var(--heading);
+}
+
+// Code blocks
+code,
+pre {
+    font-family: $font-code;
+}
+
+// Links
+a {
+    color: var(--base-color);
+    transition: color 0.3s ease;
+
+    &:hover {
+        color: var(--accent-color);
+    }
+}
+
+// Theme Toggle Button
+#theme-toggle {
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    z-index: 1000;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+
+    i {
+        font-size: 1.2em;
+        color: var(--text);
+        transition: color 0.3s ease;
+    }
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
+    }
+}
+
+html[data-theme='light'] #theme-toggle {
+    background: rgba(13, 53, 128, 0.1);
+    border: 1px solid rgba(13, 53, 128, 0.2);
+}
+
+// Author Profile Sidebar
+.author__avatar img {
+    border-radius: 50%;
+    border: 3px solid var(--base-color);
+    box-shadow: 0 0 20px rgba(var(--base-color-rgb), 0.3);
+}
+
+.author__name {
+    font-family: $font-heading;
+    color: var(--heading);
+}
+
+.author__bio {
+    color: var(--text-light);
+}
+
+// Masthead / Navigation
+.masthead {
+    background: transparent;
+    border-bottom: none;
+    position: relative;
+    z-index: 20;
+}
+
+// Give masthead a subtle background only when scrolled (via JS if needed)
+// For now, keep it transparent to avoid the dark strip
+
+.site-title {
+    font-family: $font-heading;
+    color: var(--heading) !important;
+}
+
+.greedy-nav {
+    background: transparent;
+
+    a {
+        color: var(--text);
+
+        &:hover {
+            color: var(--base-color);
+        }
+    }
+
+    .visible-links a:before {
+        background: var(--accent-color);
+    }
+}
+
+// Page Content
+.page__content {
+    h2 {
+        border-bottom: 2px solid var(--accent-color);
+        padding-bottom: 0.5em;
+    }
+
+    p {
+        color: var(--text);
+        line-height: 1.8;
+    }
+}
+
+// Archive Items
+.archive__item {
+    @extend .glass-card;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.archive__item-title {
+    font-family: $font-heading;
+    color: var(--heading);
+
+    a {
+        color: var(--heading);
+
+        &:hover {
+            color: var(--base-color);
+        }
+    }
+}
+
+.archive__item-excerpt {
+    color: var(--text-light);
+}
+
+// Tags
+.page__taxonomy-item {
+    font-family: $font-code;
+    background: rgba(var(--base-color-rgb), 0.1);
+    color: var(--base-color);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    display: inline-block;
+
+    &:hover {
+        background: var(--base-color);
+        color: #fff;
+    }
+}
+
+// Footer
+.page__footer {
+    background: var(--background-alt);
+    border-top: 1px solid var(--border);
+    color: var(--text-light);
+}
+
+// Syntax Highlighting Overrides for Dark Mode
+[data-theme="dark"] {
+    .highlight {
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 8px;
+    }
+}
+
+// Scroll Reveal Animation
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+// Feature Row (Homepage)
+.feature__wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.feature__item {
+    @extend .glass-card;
+    flex: 1;
+    min-width: 280px;
+    max-width: 350px;
+    padding: 30px;
+    text-align: center;
+
+    .feature__item-title {
+        font-family: $font-heading;
+        color: var(--heading);
+    }
+
+    .archive__item-excerpt {
+        color: var(--text-light);
+    }
+
+    .btn {
+        @extend .btn-primary;
+        margin-top: 15px;
+    }
+}
+
+// Page Header
+.page__hero--overlay {
+    background-blend-mode: overlay;
+
+    .page__title {
+        font-family: $font-heading;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    #theme-toggle {
+        right: 15px;
+        top: 15px;
+        width: 40px;
+        height: 40px;
+    }
+}
+
+// Home Intro Section
+.home-intro {
+    text-align: center;
+    padding: 40px 20px;
+    margin-bottom: 30px;
+    background: rgba(var(--base-color-rgb), 0.05);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+
+    h2 {
+        font-family: $font-heading;
+        color: var(--heading);
+        font-size: 2em;
+        margin-bottom: 15px;
+        border: none;
+        padding: 0;
+    }
+
+    p {
+        color: var(--text-light);
+        font-size: 1.1em;
+        max-width: 600px;
+        margin: 0 auto 25px;
+        line-height: 1.6;
+    }
+}
+
+.home-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    .btn {
+        padding: 12px 28px;
+        font-weight: 500;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+
+        &--primary {
+            background: var(--base-color);
+            color: #fff;
+            border: 2px solid var(--base-color);
+
+            &:hover {
+                background: var(--accent-color);
+                border-color: var(--accent-color);
+                transform: translateY(-2px);
+            }
+        }
+
+        &--inverse {
+            background: transparent;
+            color: var(--base-color);
+            border: 2px solid var(--base-color);
+
+            &:hover {
+                background: var(--base-color);
+                color: #fff;
+                transform: translateY(-2px);
+            }
+        }
+    }
+}
+
+// Archive subtitle styling
+.archive__subtitle {
+    font-family: $font-heading;
+    color: var(--heading);
+    font-size: 1.5em;
+    margin: 30px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent-color);
+}
+
+// Recent posts list on home page
+.entries-list {
+    .archive__item {
+        margin-bottom: 25px;
+    }
+}
