@@ -8,7 +8,7 @@
   Free for personal and commercial use under the MIT license
   https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
 -->
-<html lang="{{ site.locale | slice: 0,2 | default: " en" }}" class="no-js" data-theme="dark">
+<html lang="{{ site.locale | slice: 0,2 | default: 'en' }}" class="no-js" data-theme="dark">
 
 <head>
   {% include head.html %}
@@ -17,6 +17,12 @@
 
 <body
   class="layout--{{ page.layout | default: layout.layout }}{% if page.classes or layout.classes %}{{ page.classes | default: layout.classes | join: ' ' | prepend: ' ' }}{% endif %}">
+
+  <!-- Reading Progress Bar (for posts) -->
+  {% if page.layout == 'single' %}
+  {% include reading-progress.html %}
+  {% endif %}
+
   {% include_cached skip-links.html %}
   {% include_cached browser-upgrade.html %}
   {% include_cached masthead.html %}
@@ -39,8 +45,12 @@
     </footer>
   </div>
 
+  <!-- Back to Top Button -->
+  {% include back-to-top.html %}
+
   {% include scripts.html %}
   <script src="{{ '/assets/js/theme.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/enhancements.js' | relative_url }}"></script>
 
 </body>
 

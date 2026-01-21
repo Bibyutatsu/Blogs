@@ -1,0 +1,13 @@
+<div id="share-buttons">
+    <a href="https://twitter.com/intent/tweet?url={{ page.url | absolute_url | url_encode }}&text={{ page.title | url_encode }}"
+        class="share-btn share-twitter" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i> Share
+    </a>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ page.url | absolute_url | url_encode }}"
+        class="share-btn share-linkedin" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i> Share
+    </a>
+    <button class="share-btn share-copy">
+        <i class="fas fa-link"></i> Copy Link
+    </button>
+</div>

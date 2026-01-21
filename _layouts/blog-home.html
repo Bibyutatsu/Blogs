@@ -66,13 +66,17 @@
             <h2 class="section-heading">All Posts</h2>
             <p class="section-subtitle">Deep dives into AI/ML projects, tutorials, and insights</p>
 
+            <!-- Category Filter Pills -->
+            <div id="category-filters"></div>
+
             <div class="posts-grid">
                 {% for post in site.posts %}
                 {% comment %} Calculate read time exactly like the theme does {% endcomment %}
                 {% assign words = post.content | strip_html | number_of_words %}
                 {% assign wpm = site.words_per_minute | default: 200 %}
                 {% assign read_time = words | divided_by: wpm %}
-                {% if read_time < 1 %}{% assign read_time=1 %}{% endif %} <article class="post-card glass-card">
+                {% if read_time < 1 %}{% assign read_time=1 %}{% endif %} {% assign category=post.categories | first %}
+                    <article class="post-card glass-card" data-category="{{ category }}">
                     <a href="{{ post.url | relative_url }}" class="post-card-link">
                         <div class="post-card-header">
                             <time class="post-date" datetime="{{ post.date | date_to_xmlschema }}">
@@ -86,7 +90,7 @@
                         <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncate: 180 }}</p>
                         {% if post.categories.size > 0 %}
                         <div class="post-card-footer">
-                            <span class="category-badge">{{ post.categories | first }}</span>
+                            <span class="category-badge">{{ category }}</span>
                             <span class="read-more-arrow"><i class="fas fa-arrow-right"></i></span>
                         </div>
                         {% endif %}
@@ -117,9 +121,13 @@
         </div>
     </footer>
 
+    <!-- Back to Top Button -->
+    {% include back-to-top.html %}
+
     {% include scripts.html %}
     <script src="{{ '/assets/js/theme.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/particles.js' | relative_url }}"></script>
+    <script src="{{ '/assets/js/enhancements.js' | relative_url }}"></script>
 </body>
 
 </html>
