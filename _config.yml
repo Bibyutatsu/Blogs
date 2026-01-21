@@ -39,7 +39,10 @@ social:
 
 # Analytics
 analytics:
-  provider               : false
+  provider               : "google-gtag"
+  google:
+    tracking_id          : "G-W9EW0QE84W" # REPLACE THIS with your measurement ID
+    anonymize_ip         : true
 
 # Site Author
 author:
