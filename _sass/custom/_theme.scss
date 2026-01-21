@@ -255,13 +255,95 @@ html[data-theme='light'] #theme-toggle {
     }
 }
 
-// Page Header
+// Page Header - Translucent Glassmorphism Style
 .page__hero--overlay {
+    position: relative;
+    background: radial-gradient(circle at center, #1e293b 0%, #020617 100%) !important;
     background-blend-mode: overlay;
+    min-height: 350px;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 40px;
+    overflow: hidden;
+
+    // Particle canvas
+    .hero-particles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    // Glassmorphism overlay
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .wrapper {
+        position: relative;
+        z-index: 2;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 50px;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
 
     .page__title {
         font-family: $font-heading;
-        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+        text-shadow: none;
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .page__lead {
+        color: rgba(255, 255, 255, 0.85);
+        text-shadow: none;
+    }
+
+    .page__meta {
+        color: rgba(255, 255, 255, 0.7);
+    }
+}
+
+html[data-theme='light'] .page__hero--overlay {
+    background: radial-gradient(circle at center, #e2e8f0 0%, #cbd5e1 100%) !important;
+
+    .wrapper {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 2px solid rgba(13, 53, 128, 0.15);
+        box-shadow: 0 10px 40px rgba(13, 53, 128, 0.15);
+    }
+
+    .page__title {
+        color: #0f172a;
+    }
+
+    .page__lead {
+        color: rgba(15, 23, 42, 0.85);
+    }
+
+    .page__meta {
+        color: rgba(15, 23, 42, 0.7);
     }
 }
 
@@ -272,6 +354,11 @@ html[data-theme='light'] #theme-toggle {
         top: 15px;
         width: 40px;
         height: 40px;
+    }
+
+    .page__hero--overlay {
+        min-height: 280px;
+        padding-bottom: 30px;
     }
 }
 

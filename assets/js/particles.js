@@ -5,10 +5,13 @@
 (function () {
     'use strict';
 
-    const heroSection = document.getElementById('hero');
+    // Try to find canvas in homepage hero OR post page hero
     const canvas = document.getElementById('hero-canvas');
+    if (!canvas) return;
 
-    if (!heroSection || !canvas) return;
+    // Find parent container - either #hero or .page__hero--overlay
+    const heroSection = document.getElementById('hero') || canvas.closest('.page__hero--overlay');
+    if (!heroSection) return;
 
     const ctx = canvas.getContext('2d');
     const html = document.documentElement;
@@ -26,16 +29,16 @@
     const createParticles = () => {
         particles = [];
         // Slightly reduced density for larger particles
-        const particleCount = Math.floor(width / 10);
+        const particleCount = Math.floor(width / 12);
 
         for (let i = 0; i < particleCount; i++) {
             particles.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: (Math.random() - 0.5) * 0.5,
-                size: Math.random() * 2 + 2, // 2px to 4px
-                opacity: Math.random() * 0.3 + 0.5 // 0.5 to 0.8
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                size: Math.random() * 2 + 1.5, // 1.5px to 3.5px
+                opacity: Math.random() * 0.25 + 0.4 // 0.4 to 0.65
             });
         }
     };
@@ -46,7 +49,7 @@
 
         // Check theme for particle color
         const isDark = html.getAttribute('data-theme') === 'dark';
-        const color = isDark ? '255, 255, 255' : '13, 53, 128';
+        const color = isDark ? '96, 165, 250' : '13, 53, 128'; // Blue accent color
 
         // Draw particles
         particles.forEach(p => {
@@ -72,10 +75,10 @@
                 const dy = p1.y - p2.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
-                if (dist < 120) {
+                if (dist < 100) {
                     ctx.beginPath();
-                    ctx.strokeStyle = `rgba(${color}, ${0.8 * (1 - dist / 120)})`;
-                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = `rgba(${color}, ${0.6 * (1 - dist / 100)})`;
+                    ctx.lineWidth = 0.8;
                     ctx.moveTo(p1.x, p1.y);
                     ctx.lineTo(p2.x, p2.y);
                     ctx.stroke();
@@ -97,7 +100,7 @@
         createParticles();
     });
 
-    // Scroll to posts section
+    // Scroll to posts section (homepage only)
     const heroDown = document.getElementById('hero-down');
     if (heroDown) {
         heroDown.addEventListener('click', () => {

@@ -17,9 +17,10 @@ tags:
   - reinforcement-learning
   - SMILES
 header:
-  overlay_color: "#0f172a"
-  overlay_filter: "0.6"
+  overlay_color: "#000"
+  overlay_filter: "0"
 excerpt: "A PyTorch Lightning implementation of GENTRL for generating novel molecules using VAE and Reinforcement Learning."
+read_time: true
 toc: true
 toc_label: "Contents"
 toc_icon: "flask"

@@ -46,12 +46,7 @@ author:
   name             : "Bibhash Mitra"
   avatar           : "https://raw.githubusercontent.com/Bibyutatsu/Bibyutatsu.github.io/master/images/img_profile.jpg"
   bio              : "Senior Data Scientist & AI/ML Expert with 6+ years of experience in Generative AI, NLP, Computer Vision, and Quantum Computing."
-  location         : "Pune, India"
-  email            : "bibhash.c.mitra@gmail.com"
   links:
-    - label: "Email"
-      icon: "fas fa-fw fa-envelope-square"
-      url: "mailto:bibhash.c.mitra@gmail.com"
     - label: "Portfolio"
       icon: "fas fa-fw fa-link"
       url: "https://bibyutatsu.github.io"
@@ -61,6 +56,9 @@ author:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/Bibyutatsu"
+    - label: "Email"
+      icon: "fas fa-fw fa-envelope"
+      url: "mailto:bibhash.c.mitra@gmail.com"
 
 # Site Footer
 footer:
