@@ -22,6 +22,12 @@
 
 <script>
   document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+
+  // Theme Initialization - Prevent FOUC
+  (function () {
+    var savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  })();
 </script>
 
 <!-- For all browsers -->

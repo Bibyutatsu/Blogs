@@ -8,7 +8,7 @@ description              : "Technical blog by Bibhash Mitra covering AI, Machine
 url                      : "https://Bibyutatsu.github.io"
 baseurl                  : "/Blogs"
 repository               : "Bibyutatsu/Blogs"
-teaser                   : "/assets/images/lead-bg-1.jpg"
+teaser                   : "/assets/images/icon.webp"
 logo                     : "/assets/images/icon.webp"
 words_per_minute         : 200
 
@@ -71,39 +71,20 @@ footer:
       url: "https://github.com/Bibyutatsu"
 
 # Reading Files
+
 include:
-  - .htaccess
   - _pages
 exclude:
-  - "*.sublime-project"
-  - "*.sublime-workspace"
   - vendor
-  - .asset-cache
-  - .bundle
-  - .jekyll-assets-cache
-  - .sass-cache
-  - assets/js/plugins
-  - assets/js/_main.js
-  - assets/js/vendor
-  - Capfile
-  - CHANGELOG
-  - config
   - Gemfile
-  - Gruntfile.js
-  - gulpfile.js
+  - Gemfile.lock
+  - README.md
   - LICENSE
-  - log
   - node_modules
-  - package.json
-  - package-lock.json
-  - Rakefile
-  - README
-  - tmp
 keep_files:
   - .git
   - .svn
 encoding: "utf-8"
-markdown_ext: "markdown,mkdown,mkdn,mkd,md"
 
 # Conversion
 markdown: kramdown
@@ -136,13 +117,6 @@ timezone: Asia/Kolkata
 
 # Plugins
 plugins:
-  - jekyll-paginate
-  - jekyll-sitemap
-  - jekyll-gist
-  - jekyll-feed
-  - jekyll-include-cache
-
-whitelist:
   - jekyll-paginate
   - jekyll-sitemap
   - jekyll-gist
