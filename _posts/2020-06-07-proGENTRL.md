@@ -17,7 +17,6 @@ tags:
   - reinforcement-learning
   - SMILES
 header:
-  teaser: "/assets/images/ml_front_reshaped_trans.png"
   overlay_color: "#0f172a"
   overlay_filter: "0.6"
 excerpt: "A PyTorch Lightning implementation of GENTRL for generating novel molecules using VAE and Reinforcement Learning."
@@ -160,7 +159,7 @@ A VAE encodes molecules (e.g., SMILES strings) into a continuous latent space an
 ```
 SMILES Input → Encoder → Latent Space (z) → Decoder → SMILES Output
      ↓                        ↓                           ↓
-"CCO"        →   [0.2, -0.5, 1.3, ...]   →           "CCO"
+   "CCO"        →   [0.2, -0.5, 1.3, ...]   →           "CCO"
 ```
 
 ### Reinforcement Learning (RL) Optimization
