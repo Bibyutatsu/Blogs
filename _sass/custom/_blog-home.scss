@@ -42,6 +42,7 @@ html[data-theme='light'] #hero {
     gap: 60px;
     max-width: 1000px;
     padding: 50px;
+    // Dark mode is default - translucent dark glass
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -50,12 +51,23 @@ html[data-theme='light'] #hero {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
-html[data-theme='light'] .hero-container {
+// Light mode ONLY when explicitly set
+html[data-theme='light'] .hero-container,
+html:not([data-theme='dark']) .hero-container {
     background: rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border: 2px solid rgba(13, 53, 128, 0.15);
     box-shadow: 0 10px 40px rgba(13, 53, 128, 0.15);
+}
+
+// Force dark mode styling when data-theme is dark
+html[data-theme='dark'] .hero-container {
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
 }
 
 // Profile Image
@@ -134,8 +146,8 @@ html[data-theme='light'] .hero-container {
     padding: 14px 28px;
     font-size: 1em;
     font-weight: 500;
-    color: #fff;
-    background: linear-gradient(135deg, var(--base-color), var(--base-color-hover));
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #0D3580, #0a2a66);
     border: none;
     border-radius: 30px;
     text-decoration: none;
@@ -143,10 +155,19 @@ html[data-theme='light'] .hero-container {
     cursor: pointer;
 
     &:hover {
-        background: linear-gradient(135deg, var(--accent-color), var(--accent-color-hover));
+        background: linear-gradient(135deg, #D2292D, #b01f22);
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(210, 41, 45, 0.4);
-        color: #fff;
+        color: #ffffff !important;
+    }
+}
+
+// Dark mode primary button
+[data-theme="dark"] .btn-primary {
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+
+    &:hover {
+        background: linear-gradient(135deg, #f87171, #ef4444);
     }
 }
 
