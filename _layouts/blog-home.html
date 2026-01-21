@@ -66,17 +66,31 @@
             <h2 class="section-heading">All Posts</h2>
             <p class="section-subtitle">Deep dives into AI/ML projects, tutorials, and insights</p>
 
+            <!-- Search Bar -->
+            <div class="search-bar-container">
+                <div class="search-bar glass-card">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="post-search" placeholder="Search posts..." autocomplete="off">
+                    <button type="button" id="search-clear" class="search-clear" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
             <!-- Category Filter Pills -->
             <div id="category-filters"></div>
 
-            <div class="posts-grid">
-                {% for post in site.posts %}
+            <div class="posts-grid" id="posts-grid">
+                {% assign posts = paginator.posts | default: site.posts %}
+                {% for post in posts %}
                 {% comment %} Calculate read time exactly like the theme does {% endcomment %}
                 {% assign words = post.content | strip_html | number_of_words %}
                 {% assign wpm = site.words_per_minute | default: 200 %}
                 {% assign read_time = words | divided_by: wpm %}
                 {% if read_time < 1 %}{% assign read_time=1 %}{% endif %} {% assign category=post.categories | first %}
-                    <article class="post-card glass-card" data-category="{{ category }}">
+                    <article class="post-card glass-card" data-category="{{ category }}"
+                    data-title="{{ post.title | downcase }}"
+                    data-excerpt="{{ post.excerpt | strip_html | downcase | truncate: 300 }}">
                     <a href="{{ post.url | relative_url }}" class="post-card-link">
                         <div class="post-card-header">
                             <time class="post-date" datetime="{{ post.date | date_to_xmlschema }}">
@@ -99,11 +113,68 @@
                     {% endfor %}
             </div>
 
+            <!-- No Results Message -->
+            <div id="no-results" class="no-posts glass-card" style="display: none;">
+                <i class="fas fa-search"></i>
+                <p>No posts found matching your search.</p>
+            </div>
+
             {% if site.posts.size == 0 %}
             <div class="no-posts glass-card">
                 <i class="fas fa-pencil-alt"></i>
                 <p>No posts yet. Check back soon!</p>
             </div>
+            {% endif %}
+
+            <!-- Pagination -->
+            {% if paginator.total_pages > 1 %}
+            <nav class="pagination-nav">
+                <ul class="pagination">
+                    <!-- Previous Button -->
+                    {% if paginator.previous_page %}
+                    <li class="pagination-item">
+                        <a href="{{ paginator.previous_page_path | relative_url }}" class="pagination-link prev">
+                            <i class="fas fa-chevron-left"></i> Prev
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="pagination-item disabled">
+                        <span class="pagination-link prev">
+                            <i class="fas fa-chevron-left"></i> Prev
+                        </span>
+                    </li>
+                    {% endif %}
+
+                    <!-- Page Numbers -->
+                    {% for page in (1..paginator.total_pages) %}
+                    <li class="pagination-item">
+                        {% if page == paginator.page %}
+                        <span class="pagination-link active">{{ page }}</span>
+                        {% elsif page == 1 %}
+                        <a href="{{ '/' | relative_url }}" class="pagination-link">{{ page }}</a>
+                        {% else %}
+                        <a href="{{ site.paginate_path | relative_url | replace: ':num', page }}"
+                            class="pagination-link">{{ page }}</a>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+
+                    <!-- Next Button -->
+                    {% if paginator.next_page %}
+                    <li class="pagination-item">
+                        <a href="{{ paginator.next_page_path | relative_url }}" class="pagination-link next">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="pagination-item disabled">
+                        <span class="pagination-link next">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
             {% endif %}
         </div>
     </section>

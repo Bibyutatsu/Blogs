@@ -135,30 +135,11 @@
     };
 
     // ================================
-    // 5. Card Tilt Effect (3D Hover)
+    // 5. Card Hover Effect (CSS handles this now)
     // ================================
     const initCardTilt = () => {
-        const cards = document.querySelectorAll('.post-card');
-
-        cards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-
-                const rotateX = (y - centerY) / 20;
-                const rotateY = (centerX - x) / 20;
-
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
-            });
-
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
-            });
-        });
+        // Hover effects are now handled purely by CSS for best performance
+        // See _enhancements.scss .post-card:hover
     };
 
     // ================================
@@ -209,6 +190,64 @@
     };
 
     // ================================
+    // 8. Post Search
+    // ================================
+    const initPostSearch = () => {
+        const searchInput = document.getElementById('post-search');
+        const clearBtn = document.getElementById('search-clear');
+        const postsGrid = document.getElementById('posts-grid');
+        const noResults = document.getElementById('no-results');
+        const postCards = document.querySelectorAll('.post-card');
+
+        if (!searchInput || postCards.length === 0) return;
+
+        const filterPosts = (query) => {
+            const searchTerm = query.toLowerCase().trim();
+            let visibleCount = 0;
+
+            postCards.forEach(card => {
+                const title = card.dataset.title || '';
+                const excerpt = card.dataset.excerpt || '';
+                const category = (card.dataset.category || '').toLowerCase();
+
+                const matches = title.includes(searchTerm) ||
+                    excerpt.includes(searchTerm) ||
+                    category.includes(searchTerm);
+
+                if (searchTerm === '' || matches) {
+                    card.style.display = '';
+                    card.classList.add('revealed');
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show/hide no results message
+            if (noResults) {
+                noResults.style.display = visibleCount === 0 && searchTerm !== '' ? 'block' : 'none';
+            }
+
+            // Show/hide clear button
+            if (clearBtn) {
+                clearBtn.style.display = searchTerm !== '' ? 'block' : 'none';
+            }
+        };
+
+        searchInput.addEventListener('input', (e) => {
+            filterPosts(e.target.value);
+        });
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                filterPosts('');
+                searchInput.focus();
+            });
+        }
+    };
+
+    // ================================
     // Initialize All
     // ================================
     document.addEventListener('DOMContentLoaded', () => {
@@ -219,6 +258,8 @@
         initCardTilt();
         initShareButtons();
         initSmoothScroll();
+        initPostSearch();
     });
 
 })();
+

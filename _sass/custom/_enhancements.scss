@@ -143,11 +143,16 @@
 }
 
 // ================================
-// 5. Card Tilt Effect
+// 5. Card Hover Effect (Simple & Snappy)
 // ================================
 .post-card {
-    transition: transform 0.2s ease, box-shadow 0.4s ease;
-    transform-style: preserve-3d;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+
+    &:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25),
+            0 0 30px rgba(var(--base-color-rgb), 0.15);
+    }
 }
 
 // ================================
@@ -217,7 +222,119 @@
 }
 
 // ================================
-// 7. Responsive Adjustments
+// 7. Search Bar
+// ================================
+.search-bar-container {
+    max-width: 500px;
+    margin: 0 auto 30px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-radius: 50px;
+
+    i {
+        color: var(--text-light);
+        font-size: 1em;
+    }
+
+    input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-family: $font-body;
+        font-size: 1em;
+        color: var(--text);
+
+        &::placeholder {
+            color: var(--text-light);
+            opacity: 0.7;
+        }
+    }
+}
+
+.search-clear {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-light);
+    padding: 5px;
+    transition: color 0.3s ease;
+
+    &:hover {
+        color: var(--accent-color);
+    }
+}
+
+// ================================
+// 8. Pagination
+// ================================
+.pagination-nav {
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pagination-item {
+    &.disabled .pagination-link {
+        opacity: 0.4;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+}
+
+.pagination-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    height: 42px;
+    padding: 0 15px;
+    font-family: $font-code;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: var(--text);
+    background: rgba(var(--base-color-rgb), 0.05);
+    border: 1px solid rgba(var(--base-color-rgb), 0.2);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+
+    &:hover:not(.active) {
+        background: rgba(var(--base-color-rgb), 0.15);
+        border-color: var(--base-color);
+        color: var(--base-color);
+        transform: translateY(-2px);
+    }
+
+    &.active {
+        background: var(--base-color);
+        border-color: var(--base-color);
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(var(--base-color-rgb), 0.3);
+    }
+
+    &.prev,
+    &.next {
+        gap: 6px;
+    }
+}
+
+// ================================
+// 9. Responsive Adjustments
 // ================================
 @media (max-width: 768px) {
     #back-to-top {
@@ -243,5 +360,35 @@
     .share-btn {
         padding: 8px 14px;
         font-size: 0.85em;
+    }
+
+    .search-bar-container {
+        margin: 0 10px 25px;
+    }
+
+    .search-bar {
+        padding: 12px 16px;
+    }
+
+    .pagination {
+        gap: 5px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .pagination-link {
+        min-width: 36px;
+        height: 36px;
+        padding: 0 10px;
+        font-size: 0.85em;
+
+        &.prev,
+        &.next {
+            padding: 0 12px;
+
+            i {
+                display: inline;
+            }
+        }
     }
 }
