@@ -155,6 +155,23 @@ html[data-theme='light'] #theme-toggle {
     }
 }
 
+// Right Sidebar (TOC) – push content away so the sidebar doesn't hug / overlap it
+.page {
+    @include breakpoint($large) {
+        padding-right: calc(#{$right-sidebar-width-narrow} + 2em);
+    }
+
+    @include breakpoint($x-large) {
+        padding-right: calc(#{$right-sidebar-width} + 2em);
+    }
+}
+
+// Prevent share buttons from overflowing into the sidebar area
+#share-buttons {
+    max-width: 100%;
+    overflow: hidden;
+}
+
 // Archive Items
 .archive__item {
     @extend .glass-card;
