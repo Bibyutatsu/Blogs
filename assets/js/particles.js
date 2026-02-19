@@ -18,6 +18,7 @@
     let width, height;
     let particles = [];
     let animationId;
+    let isVisible = true;
 
     // Initialize canvas size
     const initCanvas = () => {
@@ -45,6 +46,8 @@
 
     // Draw particles and connections
     const drawParticles = () => {
+        if (!isVisible) return; // Skip rendering when off-screen
+
         ctx.clearRect(0, 0, width, height);
 
         // Check theme for particle color
@@ -93,6 +96,21 @@
     initCanvas();
     createParticles();
     drawParticles();
+
+    // Pause/resume animation based on visibility
+    const visibilityObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            isVisible = entry.isIntersecting;
+            if (isVisible && !animationId) {
+                drawParticles(); // Resume
+            } else if (!isVisible && animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        });
+    }, { threshold: 0 });
+
+    visibilityObserver.observe(heroSection);
 
     // Resize handler
     window.addEventListener('resize', () => {

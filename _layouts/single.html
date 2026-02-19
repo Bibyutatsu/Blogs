@@ -40,6 +40,12 @@ layout: default
       </header>
       {% endunless %}
 
+      <div class="page__header-actions">
+        <button id="layout-toggle" class="layout-toggle-btn" aria-label="Toggle wide layout"
+          title="Toggle wide/focused layout">
+          <i class="fas fa-expand-alt" aria-hidden="true"></i>
+        </button>
+      </div>
       <section class="page__content" itemprop="text">
         {% if page.toc %}
         <aside class="sidebar__right {% if page.toc_sticky %}sticky{% endif %}">

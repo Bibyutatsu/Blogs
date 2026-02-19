@@ -248,6 +248,51 @@
     };
 
     // ================================
+    // 9. Lazy Load Post Images
+    // ================================
+    const initLazyImages = () => {
+        const images = document.querySelectorAll('.page__content img');
+        if (images.length === 0) return;
+
+        images.forEach((img, index) => {
+            // Skip first image (likely above the fold)
+            if (index === 0) return;
+            img.setAttribute('loading', 'lazy');
+            img.setAttribute('decoding', 'async');
+        });
+    };
+
+    // ================================
+    // 10. Layout Width Toggle
+    // ================================
+    const initLayoutToggle = () => {
+        const toggleBtn = document.getElementById('layout-toggle');
+        if (!toggleBtn) return;
+
+        const icon = toggleBtn.querySelector('i');
+        const body = document.body;
+
+        // Restore saved preference
+        const savedLayout = localStorage.getItem('layout-width');
+        if (savedLayout === 'wide') {
+            body.classList.add('wide');
+            toggleBtn.classList.add('is-wide');
+            if (icon) icon.className = 'fas fa-compress-alt';
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            const isWide = body.classList.toggle('wide');
+            toggleBtn.classList.toggle('is-wide', isWide);
+
+            if (icon) {
+                icon.className = isWide ? 'fas fa-compress-alt' : 'fas fa-expand-alt';
+            }
+
+            localStorage.setItem('layout-width', isWide ? 'wide' : 'focused');
+        });
+    };
+
+    // ================================
     // Initialize All
     // ================================
     document.addEventListener('DOMContentLoaded', () => {
@@ -259,6 +304,8 @@
         initShareButtons();
         initSmoothScroll();
         initPostSearch();
+        initLazyImages();
+        initLayoutToggle();
     });
 
 })();

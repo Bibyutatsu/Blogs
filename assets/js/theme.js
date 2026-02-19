@@ -31,27 +31,3 @@
         }
     }
 })();
-
-// Scroll Reveal Animation
-// =======================
-document.addEventListener('DOMContentLoaded', function() {
-    const reveals = document.querySelectorAll('.reveal');
-    
-    if (reveals.length === 0) return;
-    
-    const revealOnScroll = function() {
-        const windowHeight = window.innerHeight;
-        
-        reveals.forEach(function(element) {
-            const elementTop = element.getBoundingClientRect().top;
-            const revealPoint = 150;
-            
-            if (elementTop < windowHeight - revealPoint) {
-                element.classList.add('active');
-            }
-        });
-    };
-    
-    window.addEventListener('scroll', revealOnScroll);
-    revealOnScroll(); // Initial check
-});

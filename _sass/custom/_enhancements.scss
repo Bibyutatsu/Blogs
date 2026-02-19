@@ -187,13 +187,13 @@
     }
 }
 
-.share-twitter {
-    background: #1DA1F2;
+.share-x {
+    background: #000000;
     color: #fff;
 
     &:hover {
-        background: #0d8ddb;
-        box-shadow: 0 4px 15px rgba(29, 161, 242, 0.4);
+        background: #333333;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         color: #fff;
     }
 }
@@ -390,5 +390,59 @@
                 display: inline;
             }
         }
+    }
+}
+
+// ================================
+// 10. Layout Width Toggle Button
+// ================================
+.page__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+
+    .page__meta {
+        margin: 0;
+    }
+}
+
+.layout-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(var(--base-color-rgb), 0.3);
+    border-radius: 8px;
+    background: rgba(var(--base-color-rgb), 0.05);
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85em;
+    padding: 0;
+
+    &:hover {
+        background: rgba(var(--base-color-rgb), 0.15);
+        color: var(--base-color);
+        border-color: var(--base-color);
+        transform: scale(1.05);
+    }
+
+    &.is-wide {
+        background: var(--base-color);
+        color: #fff;
+        border-color: var(--base-color);
+        box-shadow: 0 2px 8px rgba(var(--base-color-rgb), 0.3);
+    }
+
+    i {
+        transition: transform 0.3s ease;
+    }
+}
+
+@media (max-width: 768px) {
+    .layout-toggle-btn {
+        display: none; // Hide on mobile — layout is always full-width
     }
 }

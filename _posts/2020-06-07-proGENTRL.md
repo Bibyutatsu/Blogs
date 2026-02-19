@@ -20,11 +20,11 @@ header:
   overlay_color: "#000"
   overlay_filter: "0"
 excerpt: "A PyTorch Lightning implementation of GENTRL for generating novel molecules using VAE and Reinforcement Learning."
+description: "A PyTorch Lightning implementation of GENTRL for generating novel molecules using VAE and Reinforcement Learning."
 read_time: true
 toc: true
 toc_label: "Contents"
 toc_icon: "flask"
-classes: wide
 ---
 
 ## 🚀 Introduction
