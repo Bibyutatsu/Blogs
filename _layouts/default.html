@@ -27,6 +27,7 @@
   {% include_cached browser-upgrade.html %}
   {% include_cached masthead.html %}
   {% include theme-toggle.html %}
+  {% include reactive-ui.html %}
 
   <div class="initial-content">
     {{ content }}
@@ -50,6 +51,7 @@
 
   {% include scripts.html %}
   <script src="{{ '/assets/js/theme.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/cursor.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/particles.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/enhancements.js' | relative_url }}"></script>
 

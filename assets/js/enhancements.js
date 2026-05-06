@@ -293,6 +293,19 @@
     };
 
     // ================================
+    // 11. Masthead background on scroll
+    // ================================
+    const initMastheadScroll = () => {
+        const masthead = document.querySelector('.masthead');
+        if (!masthead) return;
+        const onScroll = () => {
+            masthead.classList.toggle('scrolled', window.scrollY > 30);
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+    };
+
+    // ================================
     // Initialize All
     // ================================
     document.addEventListener('DOMContentLoaded', () => {
@@ -306,6 +319,7 @@
         initPostSearch();
         initLazyImages();
         initLayoutToggle();
+        initMastheadScroll();
     });
 
 })();

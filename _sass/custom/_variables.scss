@@ -1,48 +1,211 @@
-// Design System Variables - Matching Portfolio
-// ==============================================
+// Design System Variables - Matching Portfolio (5 Themes)
+// =========================================================
+// dark · light · batman · cyberpunk · ocean
+// Tokens follow the portfolio's semantic naming (--bg, --surface,
+// --accent, --heading-color, --glow, --cursor-color, etc.) and also
+// expose backwards-compat aliases (--base-color, --accent-color, --border,
+// --heading, --text, --text-light, --background, --background-alt) so the
+// existing minimal-mistakes overrides keep working.
 
-// Light Mode (Default)
-:root {
-    --base-color: #0D3580;
-    --base-color-rgb: 13, 53, 128;
-    --base-color-hover: #0a2a66;
-    --base-color-light: #1761B0;
-    --accent-color: #D2292D;
-    --accent-color-hover: #b01f22;
-    --background: #ffffff;
-    --background-rgb: 255, 255, 255;
-    --background-alt: #f2f2f5;
-    --background-dark: #181818;
-    --border: #dcd9d9;
-    --heading: #181818;
-    --text: #454545;
-    --text-light: #74808a;
-    --shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    --shadow-large: 0 3px 6px rgba(0, 0, 0, 0.08), 0 3px 6px rgba(0, 0, 0, 0.15);
-}
+:root,
+[data-theme="dark"] {
+    // Portfolio tokens
+    --bg: #06060f;
+    --surface: #0d0d1e;
+    --surface-2: #131326;
+    --accent: oklch(72% 0.20 210);
+    --accent-2: oklch(63% 0.22 285);
+    --accent-rgb: 0, 204, 255;
+    --accent-2-rgb: 136, 85, 255;
+    --text: #c2c7df;
+    --text-muted: #606480;
+    --border: rgba(130, 140, 200, 0.10);
+    --border-hover: rgba(130, 140, 200, 0.28);
+    --heading-color: #eaecf8;
+    --card-bg: #131326;
+    --hero-grad: linear-gradient(135deg, #eaecf8 0%, oklch(82% 0.12 220) 40%, oklch(70% 0.22 285) 100%);
+    --chart-grid: rgba(130, 140, 200, 0.14);
+    --chart-text: #c2c7df;
+    --glow: 0 0 40px oklch(72% 0.20 210 / 0.22);
+    --glow2: 0 0 40px oklch(63% 0.22 285 / 0.18);
+    --cursor-color: #ffffff;
+    --nav-blur: rgba(6, 6, 15, 0.88);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --t: 0.35s;
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
 
-// Dark Mode
-[data-theme="dark"],
-html.dark {
-    --base-color: #60a5fa;
-    --base-color-rgb: 96, 165, 250;
-    --base-color-hover: #3b82f6;
-    --base-color-light: #93c5fd;
-    --accent-color: #f87171;
-    --accent-color-hover: #ef4444;
-    --background: #0f172a;
-    --background-rgb: 15, 23, 42;
-    --background-alt: #1e293b;
+    // Backwards-compat aliases
+    --base-color: var(--accent);
+    --base-color-rgb: var(--accent-rgb);
+    --base-color-hover: var(--accent-2);
+    --base-color-light: var(--accent);
+    --accent-color: var(--accent-2);
+    --accent-color-hover: var(--accent);
+    --background: var(--bg);
+    --background-rgb: 6, 6, 15;
+    --background-alt: var(--surface);
     --background-dark: #020617;
-    --border: #334155;
-    --heading: #f1f5f9;
-    --text: #cbd5e1;
-    --text-light: #94a3b8;
+    --heading: var(--heading-color);
+    --text-light: var(--text-muted);
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.6);
     --shadow-large: 0 3px 6px rgba(0, 0, 0, 0.4), 0 3px 6px rgba(0, 0, 0, 0.5);
 }
 
-// Typography
+[data-theme="light"] {
+    --bg: #f6f6fb;
+    --surface: #ffffff;
+    --surface-2: #eeeef8;
+    --accent: oklch(48% 0.22 250);
+    --accent-2: oklch(50% 0.20 310);
+    --accent-rgb: 0, 85, 204;
+    --accent-2-rgb: 119, 34, 204;
+    --text: #2a2c3e;
+    --text-muted: #7a7d96;
+    --border: rgba(50, 60, 120, 0.12);
+    --border-hover: rgba(50, 60, 120, 0.28);
+    --heading-color: #181a2e;
+    --card-bg: #ffffff;
+    --hero-grad: linear-gradient(135deg, #181a2e 0%, oklch(40% 0.22 250) 50%, oklch(45% 0.20 310) 100%);
+    --chart-grid: rgba(50, 60, 120, 0.12);
+    --chart-text: #2a2c3e;
+    --glow: 0 4px 24px rgba(50, 60, 180, 0.12);
+    --glow2: 0 4px 24px rgba(100, 50, 180, 0.10);
+    --cursor-color: #181a2e;
+    --nav-blur: rgba(246, 246, 251, 0.92);
+
+    --base-color: var(--accent);
+    --base-color-rgb: var(--accent-rgb);
+    --base-color-hover: var(--accent-2);
+    --base-color-light: var(--accent);
+    --accent-color: var(--accent-2);
+    --accent-color-hover: var(--accent);
+    --background: var(--bg);
+    --background-rgb: 246, 246, 251;
+    --background-alt: var(--surface-2);
+    --background-dark: #181a2e;
+    --heading: var(--heading-color);
+    --text-light: var(--text-muted);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.12);
+    --shadow-large: 0 3px 6px rgba(0, 0, 0, 0.06), 0 3px 6px rgba(0, 0, 0, 0.10);
+}
+
+[data-theme="batman"] {
+    --bg: #000000;
+    --surface: #0e0e0e;
+    --surface-2: #1a1a1a;
+    --accent: #FFE919;
+    --accent-2: #ff3333;
+    --accent-rgb: 255, 233, 25;
+    --accent-2-rgb: 255, 51, 51;
+    --text: #e0e0e0;
+    --text-muted: #888888;
+    --border: rgba(255, 233, 25, 0.15);
+    --border-hover: rgba(255, 233, 25, 0.40);
+    --heading-color: #FFE919;
+    --card-bg: #0e0e0e;
+    --hero-grad: linear-gradient(135deg, #fff7a0 0%, #FFE919 50%, #ffb300 100%);
+    --chart-grid: rgba(255, 233, 25, 0.15);
+    --chart-text: #FFE919;
+    --glow: 0 0 30px rgba(255, 233, 25, 0.35);
+    --glow2: 0 0 30px rgba(255, 50, 50, 0.25);
+    --cursor-color: #FFE919;
+    --nav-blur: rgba(0, 0, 0, 0.92);
+
+    --base-color: var(--accent);
+    --base-color-rgb: var(--accent-rgb);
+    --base-color-hover: var(--accent-2);
+    --base-color-light: var(--accent);
+    --accent-color: var(--accent-2);
+    --accent-color-hover: var(--accent);
+    --background: var(--bg);
+    --background-rgb: 0, 0, 0;
+    --background-alt: var(--surface);
+    --background-dark: #000000;
+    --heading: var(--heading-color);
+    --text-light: var(--text-muted);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.7), 0 1px 2px rgba(0, 0, 0, 0.8);
+    --shadow-large: 0 3px 6px rgba(0, 0, 0, 0.6), 0 3px 6px rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="cyberpunk"] {
+    --bg: #06000e;
+    --surface: #0f0020;
+    --surface-2: #18003a;
+    --accent: #ff0080;
+    --accent-2: #00ffcc;
+    --accent-rgb: 255, 0, 128;
+    --accent-2-rgb: 0, 255, 204;
+    --text: #e0c8f0;
+    --text-muted: #8866aa;
+    --border: rgba(255, 0, 128, 0.15);
+    --border-hover: rgba(255, 0, 128, 0.38);
+    --heading-color: #f0d0ff;
+    --card-bg: #0f0020;
+    --hero-grad: linear-gradient(135deg, #ff0080 0%, #cc00ff 50%, #00ffcc 100%);
+    --chart-grid: rgba(255, 0, 128, 0.15);
+    --chart-text: #e0c8f0;
+    --glow: 0 0 30px rgba(255, 0, 128, 0.35);
+    --glow2: 0 0 30px rgba(0, 255, 204, 0.25);
+    --cursor-color: #ff0080;
+    --nav-blur: rgba(6, 0, 14, 0.92);
+
+    --base-color: var(--accent);
+    --base-color-rgb: var(--accent-rgb);
+    --base-color-hover: var(--accent-2);
+    --base-color-light: var(--accent);
+    --accent-color: var(--accent-2);
+    --accent-color-hover: var(--accent);
+    --background: var(--bg);
+    --background-rgb: 6, 0, 14;
+    --background-alt: var(--surface);
+    --background-dark: #000000;
+    --heading: var(--heading-color);
+    --text-light: var(--text-muted);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.7);
+    --shadow-large: 0 3px 6px rgba(0, 0, 0, 0.5), 0 3px 6px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="ocean"] {
+    --bg: #010d1a;
+    --surface: #071a2e;
+    --surface-2: #0c2440;
+    --accent: #00e5b0;
+    --accent-2: #0099ff;
+    --accent-rgb: 0, 229, 176;
+    --accent-2-rgb: 0, 153, 255;
+    --text: #b0d0e8;
+    --text-muted: #4a6a80;
+    --border: rgba(0, 229, 176, 0.12);
+    --border-hover: rgba(0, 229, 176, 0.32);
+    --heading-color: #d8f0f8;
+    --card-bg: #071a2e;
+    --hero-grad: linear-gradient(135deg, #d8f0f8 0%, #00e5b0 40%, #0099ff 100%);
+    --chart-grid: rgba(0, 229, 176, 0.12);
+    --chart-text: #b0d0e8;
+    --glow: 0 0 30px rgba(0, 229, 176, 0.28);
+    --glow2: 0 0 30px rgba(0, 153, 255, 0.22);
+    --cursor-color: #00e5b0;
+    --nav-blur: rgba(1, 13, 26, 0.92);
+
+    --base-color: var(--accent);
+    --base-color-rgb: var(--accent-rgb);
+    --base-color-hover: var(--accent-2);
+    --base-color-light: var(--accent);
+    --accent-color: var(--accent-2);
+    --accent-color-hover: var(--accent);
+    --background: var(--bg);
+    --background-rgb: 1, 13, 26;
+    --background-alt: var(--surface);
+    --background-dark: #000000;
+    --heading: var(--heading-color);
+    --text-light: var(--text-muted);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.7);
+    --shadow-large: 0 3px 6px rgba(0, 0, 0, 0.5), 0 3px 6px rgba(0, 0, 0, 0.6);
+}
+
+// Typography (matches portfolio)
 $font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-$font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$font-heading: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 $font-code: 'Fira Code', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+$font-batman: 'Bangers', cursive;

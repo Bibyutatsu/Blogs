@@ -44,15 +44,22 @@
         }
     };
 
+    // Theme → particle color (RGB triplet read from --accent-rgb).
+    let cachedColor = '0, 204, 255';
+    const refreshColor = () => {
+        const v = getComputedStyle(html).getPropertyValue('--accent-rgb').trim();
+        if (v) cachedColor = v;
+    };
+    refreshColor();
+    document.addEventListener('theme-change', refreshColor);
+
     // Draw particles and connections
     const drawParticles = () => {
         if (!isVisible) return; // Skip rendering when off-screen
 
         ctx.clearRect(0, 0, width, height);
 
-        // Check theme for particle color
-        const isDark = html.getAttribute('data-theme') === 'dark';
-        const color = isDark ? '96, 165, 250' : '13, 53, 128'; // Blue accent color
+        const color = cachedColor;
 
         // Draw particles
         particles.forEach(p => {

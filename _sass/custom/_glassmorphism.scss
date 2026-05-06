@@ -1,101 +1,104 @@
-// Glassmorphism Effects - Matching Portfolio
-// ===========================================
+// Glass / Surface mixins & shared utility classes
+// ================================================
+// Surface tokens come from _variables.scss (--surface, --surface-2,
+// --border, --glow). Themes that do not want a frosty look (like
+// batman/cyberpunk) still get a clean opaque surface from these.
 
-// Glass Card Mixin
-@mixin glass-card {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
+@mixin surface-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: border-color var(--t) var(--ease),
+                box-shadow var(--t) var(--ease),
+                transform var(--t) var(--ease);
+    will-change: transform;
 }
 
-// Light Mode Glass
-@mixin glass-card-light {
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 2px solid rgba(13, 53, 128, 0.15);
-    box-shadow: 0 10px 40px rgba(13, 53, 128, 0.15);
-    border-radius: 12px;
-}
-
-// Glass Card Class
 .glass-card {
-    @include glass-card;
-    transition: all 0.5s ease;
+    @include surface-card;
 
     &:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: var(--border-hover);
+        box-shadow: var(--glow);
     }
 }
 
-// Light mode overrides
-html[data-theme='light'] .glass-card,
-html:not([data-theme='dark']) .glass-card {
-    @include glass-card-light;
-
-    &:hover {
-        box-shadow: 0 15px 50px rgba(13, 53, 128, 0.2);
-    }
-}
-
-// Glassmorphic Button
+// Glassmorphic button (kept for legacy markup like search bar)
 .btn-glassy {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     padding: 10px 24px;
+    font-family: $font-body;
     font-size: 0.9em;
     font-weight: 500;
     color: var(--text);
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
     border-radius: 50px;
     cursor: pointer;
-    transition: all 0.5s ease;
+    transition: border-color var(--t), color var(--t), box-shadow var(--t), transform var(--t);
     text-decoration: none;
+    will-change: transform;
 
     &:hover {
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        color: #fff;
+        border-color: var(--accent);
+        color: var(--accent);
+        box-shadow: var(--glow);
     }
 }
 
-html[data-theme='light'] .btn-glassy {
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    color: var(--base-color);
-
-    &:hover {
-        background: rgba(255, 255, 255, 0.8);
-        color: var(--base-color-hover);
-    }
-}
-
-// Primary CTA Button
+// Primary CTA — accent pill (portfolio style)
 .btn-primary {
-    display: inline-block;
-    color: #fff;
-    padding: 15px 25px;
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    border-radius: 30px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    transition: all 0.5s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    font-family: $font-heading;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--bg) !important;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 50px;
     text-decoration: none;
-    font-weight: 500;
+    transition: box-shadow var(--t), transform var(--t), background var(--t);
+    cursor: pointer;
+    will-change: transform;
 
     &:hover {
-        color: #fff;
-        background: linear-gradient(to right, var(--accent-color), var(--accent-color-hover));
-        border-color: transparent;
+        box-shadow: var(--glow);
+        background: var(--accent);
+        color: var(--bg) !important;
         transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(210, 41, 45, 0.4);
+    }
+}
+
+// Ghost / outline CTA — accent on hover
+.btn-outline,
+.btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    font-family: $font-heading;
+    font-weight: 500;
+    font-size: 0.92rem;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid var(--border-hover);
+    border-radius: 50px;
+    text-decoration: none;
+    transition: border-color var(--t), color var(--t), transform var(--t);
+    cursor: pointer;
+    will-change: transform;
+
+    &:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: transparent;
+        transform: translateY(-2px);
     }
 }

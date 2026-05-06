@@ -1,101 +1,81 @@
-// ================================================
-// Enhancements Styles
-// ================================================
+// Enhancements: reveals, reading progress, filters, share, search,
+// pagination, back-to-top, layout toggle (matches portfolio styling).
+// ====================================================================
 
-// ================================
-// 1. Scroll Reveal Animations
-// ================================
+// ─── 1. SCROLL REVEAL ──────────────────────────────────────
 .reveal {
     opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    transform: translateY(36px);
+    transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+
+    &.from-left  { transform: translateX(-36px) translateY(0); }
+    &.from-right { transform: translateX(36px) translateY(0); }
+    &.scale-in   { transform: scale(0.92) translateY(16px); }
+
+    &.revealed,
+    &.visible {
+        opacity: 1;
+        transform: none;
+    }
 }
 
-.reveal.revealed {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-// Staggered delays for cards
 .posts-grid .post-card {
-    &:nth-child(1) {
-        transition-delay: 0.1s;
-    }
-
-    &:nth-child(2) {
-        transition-delay: 0.2s;
-    }
-
-    &:nth-child(3) {
-        transition-delay: 0.3s;
-    }
-
-    &:nth-child(4) {
-        transition-delay: 0.4s;
-    }
-
-    &:nth-child(5) {
-        transition-delay: 0.5s;
-    }
-
-    &:nth-child(6) {
-        transition-delay: 0.6s;
+    @for $i from 1 through 8 {
+        &:nth-child(#{$i}) { transition-delay: ($i * 0.06s); }
     }
 }
 
-// ================================
-// 2. Reading Progress Bar
-// ================================
+// ─── 2. READING PROGRESS BAR (per-post) ────────────────────
 #reading-progress-container {
     position: fixed;
-    top: 0;
+    top: 2px;
     left: 0;
     width: 100%;
-    height: 3px;
-    background: rgba(var(--base-color-rgb), 0.1);
-    z-index: 9999;
+    height: 2px;
+    background: rgba(var(--accent-rgb), 0.10);
+    z-index: 499;
+    pointer-events: none;
 }
 
 #reading-progress {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, var(--base-color), var(--accent-color));
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
     transition: width 0.1s ease-out;
-    box-shadow: 0 0 10px var(--accent-color);
+    box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.6);
 }
 
-// ================================
-// 3. Back to Top Button
-// ================================
+// ─── 3. BACK TO TOP ────────────────────────────────────────
 #back-to-top {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 50px;
-    height: 50px;
+    bottom: 28px;
+    right: 28px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    background: rgba(var(--base-color-rgb), 0.9);
-    color: #fff;
+    background: var(--surface);
+    border: 1px solid var(--border-hover);
+    color: var(--text);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(20px);
-    transition: all 0.3s ease;
+    transform: translateY(18px);
+    transition: opacity 0.3s var(--ease), visibility 0.3s, transform 0.3s var(--ease),
+                border-color var(--t), color var(--t), box-shadow var(--t);
     z-index: 999;
-    border: none;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 
-    i {
-        font-size: 1.2em;
-    }
+    i { font-size: 1.05em; }
 
     &:hover {
-        background: var(--accent-color);
+        border-color: var(--accent);
+        color: var(--accent);
+        box-shadow: var(--glow);
         transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(210, 41, 45, 0.4);
     }
 
     &.visible {
@@ -105,62 +85,46 @@
     }
 }
 
-// ================================
-// 4. Category Filter Pills
-// ================================
+// ─── 4. CATEGORY FILTER PILLS ──────────────────────────────
 #category-filters {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 40px;
+    gap: 10px;
+    margin-bottom: 36px;
 }
 
 .filter-pill {
-    padding: 10px 22px;
+    padding: 8px 20px;
     font-family: $font-code;
-    font-size: 0.85em;
+    font-size: 0.78em;
     font-weight: 500;
-    border: 1px solid rgba(var(--base-color-rgb), 0.3);
+    border: 1px solid var(--border);
     border-radius: 30px;
-    background: rgba(var(--base-color-rgb), 0.05);
-    color: var(--text);
+    background: var(--surface);
+    color: var(--text-muted);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--t) var(--ease);
+    letter-spacing: 0.04em;
 
     &:hover {
-        background: rgba(var(--base-color-rgb), 0.15);
-        border-color: var(--base-color);
-        color: var(--base-color);
+        background: var(--surface-2);
+        border-color: var(--accent);
+        color: var(--accent);
     }
 
     &.active {
-        background: var(--base-color);
-        border-color: var(--base-color);
-        color: #fff;
-        box-shadow: 0 4px 15px rgba(var(--base-color-rgb), 0.3);
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--bg);
+        box-shadow: var(--glow);
     }
 }
 
-// ================================
-// 5. Card Hover Effect (Simple & Snappy)
-// ================================
-.post-card {
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-
-    &:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25),
-            0 0 30px rgba(var(--base-color-rgb), 0.15);
-    }
-}
-
-// ================================
-// 6. Share Buttons
-// ================================
+// ─── 5. SHARE BUTTONS ──────────────────────────────────────
 #share-buttons {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     margin: 30px 0;
     flex-wrap: wrap;
 }
@@ -170,62 +134,61 @@
     align-items: center;
     gap: 8px;
     padding: 10px 18px;
-    font-size: 0.9em;
+    font-size: 0.85em;
+    font-family: $font-code;
     font-weight: 500;
     border-radius: 25px;
     text-decoration: none;
-    transition: all 0.3s ease;
-    border: none;
+    transition: transform var(--t) var(--ease), box-shadow var(--t), background var(--t), color var(--t);
+    border: 1px solid var(--border);
     cursor: pointer;
+    background: var(--surface);
+    color: var(--text);
 
-    i {
-        font-size: 1em;
-    }
+    i { font-size: 1em; }
 
-    &:hover {
-        transform: translateY(-2px);
-    }
+    &:hover { transform: translateY(-2px); }
 }
 
 .share-x {
-    background: #000000;
-    color: #fff;
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
 
     &:hover {
-        background: #333333;
+        background: var(--text);
+        color: var(--bg);
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-        color: #fff;
     }
 }
 
 .share-linkedin {
     background: #0A66C2;
     color: #fff;
+    border-color: #0A66C2;
 
     &:hover {
         background: #084d93;
-        box-shadow: 0 4px 15px rgba(10, 102, 194, 0.4);
         color: #fff;
+        box-shadow: 0 4px 15px rgba(10, 102, 194, 0.4);
     }
 }
 
 .share-copy {
-    background: rgba(var(--base-color-rgb), 0.1);
-    color: var(--base-color);
-    border: 1px solid rgba(var(--base-color-rgb), 0.2);
+    background: var(--surface);
+    color: var(--accent);
+    border: 1px solid rgba(var(--accent-rgb), 0.3);
 
     &:hover {
-        background: var(--base-color);
-        color: #fff;
-        box-shadow: 0 4px 15px rgba(var(--base-color-rgb), 0.3);
+        background: var(--accent);
+        color: var(--bg);
+        box-shadow: var(--glow);
     }
 }
 
-// ================================
-// 7. Search Bar
-// ================================
+// ─── 6. SEARCH BAR ─────────────────────────────────────────
 .search-bar-container {
-    max-width: 500px;
+    max-width: 540px;
     margin: 0 auto 30px;
 }
 
@@ -233,12 +196,21 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 14px 20px;
+    padding: 12px 20px;
     border-radius: 50px;
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: none !important;
+    transition: border-color var(--t), box-shadow var(--t);
+
+    &:focus-within {
+        border-color: var(--accent) !important;
+        box-shadow: var(--glow) !important;
+    }
 
     i {
-        color: var(--text-light);
-        font-size: 1em;
+        color: var(--text-muted);
+        font-size: 0.95em;
     }
 
     input {
@@ -247,12 +219,12 @@
         border: none;
         outline: none;
         font-family: $font-body;
-        font-size: 1em;
+        font-size: 0.95em;
         color: var(--text);
 
         &::placeholder {
-            color: var(--text-light);
-            opacity: 0.7;
+            color: var(--text-muted);
+            opacity: 0.85;
         }
     }
 }
@@ -261,18 +233,14 @@
     background: transparent;
     border: none;
     cursor: pointer;
-    color: var(--text-light);
-    padding: 5px;
-    transition: color 0.3s ease;
+    color: var(--text-muted);
+    padding: 4px;
+    transition: color 0.2s;
 
-    &:hover {
-        color: var(--accent-color);
-    }
+    &:hover { color: var(--accent-2); }
 }
 
-// ================================
-// 8. Pagination
-// ================================
+// ─── 7. PAGINATION ─────────────────────────────────────────
 .pagination-nav {
     margin-top: 60px;
     display: flex;
@@ -304,71 +272,100 @@
     height: 42px;
     padding: 0 15px;
     font-family: $font-code;
-    font-size: 0.9em;
+    font-size: 0.85em;
     font-weight: 500;
-    color: var(--text);
-    background: rgba(var(--base-color-rgb), 0.05);
-    border: 1px solid rgba(var(--base-color-rgb), 0.2);
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 10px;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all var(--t) var(--ease);
 
     &:hover:not(.active) {
-        background: rgba(var(--base-color-rgb), 0.15);
-        border-color: var(--base-color);
-        color: var(--base-color);
+        background: var(--surface-2);
+        border-color: var(--accent);
+        color: var(--accent);
         transform: translateY(-2px);
     }
 
     &.active {
-        background: var(--base-color);
-        border-color: var(--base-color);
-        color: #fff;
-        box-shadow: 0 4px 15px rgba(var(--base-color-rgb), 0.3);
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--bg);
+        box-shadow: var(--glow);
     }
 
     &.prev,
-    &.next {
-        gap: 6px;
-    }
+    &.next { gap: 6px; }
 }
 
-// ================================
-// 9. Responsive Adjustments
-// ================================
+// ─── 8. LAYOUT WIDTH TOGGLE ───────────────────────────────
+.page__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+
+    .page__meta { margin: 0; }
+}
+
+.layout-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--t) var(--ease);
+    font-size: 0.85em;
+    padding: 0;
+
+    &:hover {
+        background: var(--surface-2);
+        color: var(--accent);
+        border-color: var(--accent);
+        transform: scale(1.06);
+    }
+
+    &.is-wide {
+        background: var(--accent);
+        color: var(--bg);
+        border-color: var(--accent);
+        box-shadow: var(--glow);
+    }
+
+    i { transition: transform 0.3s ease; }
+}
+
+// ─── RESPONSIVE ────────────────────────────────────────────
 @media (max-width: 768px) {
     #back-to-top {
-        bottom: 20px;
-        right: 20px;
-        width: 45px;
-        height: 45px;
+        bottom: 18px;
+        right: 18px;
+        width: 44px;
+        height: 44px;
     }
 
-    #category-filters {
-        gap: 8px;
-    }
+    #category-filters { gap: 8px; }
 
     .filter-pill {
-        padding: 8px 16px;
-        font-size: 0.8em;
+        padding: 6px 14px;
+        font-size: 0.72em;
     }
 
-    #share-buttons {
-        justify-content: center;
-    }
+    #share-buttons { justify-content: center; }
 
     .share-btn {
         padding: 8px 14px;
-        font-size: 0.85em;
+        font-size: 0.8em;
     }
 
-    .search-bar-container {
-        margin: 0 10px 25px;
-    }
-
-    .search-bar {
-        padding: 12px 16px;
-    }
+    .search-bar-container { margin: 0 8px 24px; }
+    .search-bar { padding: 10px 16px; }
 
     .pagination {
         gap: 5px;
@@ -380,69 +377,8 @@
         min-width: 36px;
         height: 36px;
         padding: 0 10px;
-        font-size: 0.85em;
-
-        &.prev,
-        &.next {
-            padding: 0 12px;
-
-            i {
-                display: inline;
-            }
-        }
-    }
-}
-
-// ================================
-// 10. Layout Width Toggle Button
-// ================================
-.page__header-actions {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
-
-    .page__meta {
-        margin: 0;
-    }
-}
-
-.layout-toggle-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border: 1px solid rgba(var(--base-color-rgb), 0.3);
-    border-radius: 8px;
-    background: rgba(var(--base-color-rgb), 0.05);
-    color: var(--text-light);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.85em;
-    padding: 0;
-
-    &:hover {
-        background: rgba(var(--base-color-rgb), 0.15);
-        color: var(--base-color);
-        border-color: var(--base-color);
-        transform: scale(1.05);
+        font-size: 0.82em;
     }
 
-    &.is-wide {
-        background: var(--base-color);
-        color: #fff;
-        border-color: var(--base-color);
-        box-shadow: 0 2px 8px rgba(var(--base-color-rgb), 0.3);
-    }
-
-    i {
-        transition: transform 0.3s ease;
-    }
-}
-
-@media (max-width: 768px) {
-    .layout-toggle-btn {
-        display: none; // Hide on mobile — layout is always full-width
-    }
+    .layout-toggle-btn { display: none; }
 }
