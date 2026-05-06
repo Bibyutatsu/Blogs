@@ -5,38 +5,36 @@
 (function () {
     'use strict';
 
-    const html = document.documentElement;
-
     // ================================
     // 1. Scroll Reveal Animations
     // ================================
     const initScrollReveal = () => {
-        const revealElements = document.querySelectorAll('.post-card, .section-heading, .section-subtitle, .hero-container');
+        const els = document.querySelectorAll('.reveal');
+        if (els.length === 0) return;
 
-        if (revealElements.length === 0) return;
-
-        // Add reveal class to elements
-        revealElements.forEach((el, index) => {
-            el.classList.add('reveal');
-            el.style.transitionDelay = `${index * 0.1}s`;
-        });
-
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('revealed');
-                    observer.unobserve(entry.target);
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    obs.unobserve(e.target);
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.12 });
 
-        revealElements.forEach(el => observer.observe(el));
+        els.forEach(el => obs.observe(el));
+    };
+
+    const initCardReveal = () => {
+        const cards = document.querySelectorAll('.post-card');
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach((e, i) => {
+                if (e.isIntersecting) {
+                    setTimeout(() => e.target.classList.add('revealed'), i * 80);
+                    obs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.08 });
+        cards.forEach(c => obs.observe(c));
     };
 
     // ================================
@@ -72,23 +70,11 @@
         const btn = document.getElementById('back-to-top');
         if (!btn) return;
 
-        const toggleVisibility = () => {
-            if (window.scrollY > 500) {
-                btn.classList.add('visible');
-            } else {
-                btn.classList.remove('visible');
-            }
-        };
+        btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-        btn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        window.addEventListener('scroll', toggleVisibility, { passive: true });
-        toggleVisibility();
+        window.addEventListener('scroll', () => {
+            btn.classList.toggle('visible', window.scrollY > 400);
+        }, { passive: true });
     };
 
     // ================================
@@ -100,59 +86,171 @@
 
         if (!filterContainer || postCards.length === 0) return;
 
-        // Collect all categories
-        const categories = new Set(['All']);
+        // Count categories using data-cats for multi-category support
+        const catCount = {};
         postCards.forEach(card => {
-            const category = card.dataset.category;
-            if (category) categories.add(category);
+            const cats = (card.dataset.cats || card.dataset.category || 'Uncategorized').split(',');
+            cats.forEach(c => {
+                c = c.trim();
+                if (c) catCount[c] = (catCount[c] || 0) + 1;
+            });
         });
 
-        // Create filter buttons
-        categories.forEach(category => {
+        // All pill
+        const allBtn = document.createElement('button');
+        allBtn.className = 'filter-pill active';
+        allBtn.textContent = 'All';
+        allBtn.dataset.cat = 'all';
+        filterContainer.appendChild(allBtn);
+
+        // Category pills sorted by count
+        Object.entries(catCount).sort((a, b) => b[1] - a[1]).forEach(([cat, count]) => {
             const btn = document.createElement('button');
-            btn.className = 'filter-pill' + (category === 'All' ? ' active' : '');
-            btn.textContent = category;
-            btn.addEventListener('click', () => filterPosts(category, btn));
+            btn.className = 'filter-pill';
+            btn.textContent = `${cat} (${count})`;
+            btn.dataset.cat = cat;
             filterContainer.appendChild(btn);
         });
 
-        const filterPosts = (category, activeBtn) => {
-            // Update active state
-            filterContainer.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-            activeBtn.classList.add('active');
-
-            // Filter posts
+        const filterPosts = (cat) => {
             postCards.forEach(card => {
-                const cardCategory = card.dataset.category || '';
-                if (category === 'All' || cardCategory === category) {
-                    card.style.display = '';
-                    card.classList.add('revealed');
-                } else {
-                    card.style.display = 'none';
-                }
+                const cats = (card.dataset.cats || card.dataset.category || '').split(',').map(c => c.trim());
+                const show = cat === 'all' || cats.includes(cat);
+                card.style.display = show ? '' : 'none';
+                if (show) card.classList.add('revealed');
             });
+            checkNoResults(postCards);
         };
+
+        filterContainer.addEventListener('click', e => {
+            const pill = e.target.closest('.filter-pill');
+            if (!pill) return;
+            filterContainer.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            filterPosts(pill.dataset.cat);
+        });
+    };
+
+    function checkNoResults(postCards) {
+        const noResults = document.getElementById('no-results');
+        if (!noResults) return;
+        const visible = Array.from(postCards).filter(p => p.style.display !== 'none');
+        noResults.style.display = visible.length === 0 ? 'block' : 'none';
+    }
+
+    // ================================
+    // 5. Post Search (title + excerpt + tags)
+    // ================================
+    const initPostSearch = () => {
+        const searchInput = document.getElementById('post-search');
+        const clearBtn = document.getElementById('search-clear');
+        const postCards = document.querySelectorAll('.post-card');
+
+        if (!searchInput || postCards.length === 0) return;
+
+        const doSearch = (q) => {
+            postCards.forEach(card => {
+                const title = (card.dataset.title || '').toLowerCase();
+                const excerpt = (card.dataset.excerpt || '').toLowerCase();
+                const tags = (card.dataset.tags || '').toLowerCase();
+                const match = !q || title.includes(q) || excerpt.includes(q) || tags.includes(q);
+                card.style.display = match ? '' : 'none';
+                if (match) card.classList.add('revealed');
+            });
+            if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+            checkNoResults(postCards);
+        };
+
+        searchInput.addEventListener('input', e => doSearch(e.target.value.trim().toLowerCase()));
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                doSearch('');
+                searchInput.focus();
+            });
+        }
     };
 
     // ================================
-    // 5. Card Hover Effect (CSS handles this now)
+    // 6. Taxonomy (Categories & Tags sections)
     // ================================
-    const initCardTilt = () => {
-        // Hover effects are now handled purely by CSS for best performance
-        // See _enhancements.scss .post-card:hover
+    const buildTaxonomy = () => {
+        const postCards = document.querySelectorAll('.post-card');
+        const cGrid = document.getElementById('categories-grid');
+        const tGrid = document.getElementById('tags-grid');
+
+        if (!postCards.length) return;
+
+        // Categories
+        if (cGrid) {
+            const catMap = {};
+            postCards.forEach(p => {
+                (p.dataset.cats || p.dataset.category || 'Uncategorized').split(',').forEach(c => {
+                    c = c.trim();
+                    if (c) catMap[c] = (catMap[c] || 0) + 1;
+                });
+            });
+
+            Object.entries(catMap).sort((a, b) => b[1] - a[1]).forEach(([cat, count]) => {
+                const card = document.createElement('a');
+                card.href = '#posts';
+                card.className = 'taxonomy-card';
+                card.innerHTML = `<span class="taxonomy-card-name">${cat}</span><span class="taxonomy-card-count">${count} post${count > 1 ? 's' : ''}</span>`;
+                card.addEventListener('click', e => {
+                    e.preventDefault();
+                    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+                    const pill = document.querySelector(`.filter-pill[data-cat="${cat}"]`);
+                    if (pill) {
+                        pill.classList.add('active');
+                        pill.click();
+                    }
+                    const posts = document.getElementById('posts');
+                    if (posts) window.scrollTo({ top: posts.offsetTop - 70, behavior: 'smooth' });
+                });
+                cGrid.appendChild(card);
+            });
+        }
+
+        // Tags
+        if (tGrid) {
+            const tagMap = {};
+            postCards.forEach(p => {
+                (p.dataset.tags || '').split(',').forEach(t => {
+                    t = t.trim();
+                    if (t) tagMap[t] = (tagMap[t] || 0) + 1;
+                });
+            });
+
+            Object.entries(tagMap).sort((a, b) => b[1] - a[1]).forEach(([tag, count]) => {
+                const pill = document.createElement('a');
+                pill.href = '#posts';
+                pill.className = 'tag-pill';
+                pill.textContent = `${tag} ×${count}`;
+                pill.addEventListener('click', e => {
+                    e.preventDefault();
+                    const input = document.getElementById('post-search');
+                    const clearBtn = document.getElementById('search-clear');
+                    if (input) {
+                        input.value = tag;
+                        if (clearBtn) clearBtn.style.display = 'block';
+                        input.dispatchEvent(new Event('input'));
+                    }
+                    const posts = document.getElementById('posts');
+                    if (posts) window.scrollTo({ top: posts.offsetTop - 70, behavior: 'smooth' });
+                });
+                tGrid.appendChild(pill);
+            });
+        }
     };
 
     // ================================
-    // 6. Share Buttons
+    // 7. Share Buttons
     // ================================
     const initShareButtons = () => {
         const shareContainer = document.getElementById('share-buttons');
         if (!shareContainer) return;
 
-        const pageUrl = encodeURIComponent(window.location.href);
-        const pageTitle = encodeURIComponent(document.title);
-
-        // Copy link button
         const copyBtn = shareContainer.querySelector('.share-copy');
         if (copyBtn) {
             copyBtn.addEventListener('click', (e) => {
@@ -160,110 +258,309 @@
                 navigator.clipboard.writeText(window.location.href).then(() => {
                     const originalText = copyBtn.innerHTML;
                     copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                    setTimeout(() => {
-                        copyBtn.innerHTML = originalText;
-                    }, 2000);
+                    setTimeout(() => { copyBtn.innerHTML = originalText; }, 2000);
                 });
             });
         }
     };
 
     // ================================
-    // 7. Smooth Anchor Scrolling
+    // 8. Stat Counters
     // ================================
-    const initSmoothScroll = () => {
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
+    const initCounters = () => {
+        const nums = document.querySelectorAll('.stat-num[data-target]');
+        if (!nums.length) return;
 
-                const target = document.querySelector(targetId);
-                if (target) {
-                    e.preventDefault();
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (!e.isIntersecting) return;
+                const el = e.target;
+                const target = +el.dataset.target;
+                const start = Date.now();
+                const dur = 1800;
+
+                (function tick() {
+                    const p = Math.min((Date.now() - start) / dur, 1);
+                    const ease = 1 - Math.pow(1 - p, 3);
+                    el.textContent = Math.round(ease * target);
+                    if (p < 1) requestAnimationFrame(tick);
+                })();
+
+                obs.unobserve(el);
+            });
+        }, { threshold: 0.5 });
+
+        nums.forEach(n => obs.observe(n));
+    };
+
+    // ================================
+    // 9. Sticky Nav + Active Section
+    // ================================
+    const initMastheadScroll = () => {
+        const nav = document.getElementById('masthead') || document.querySelector('.masthead');
+        if (!nav) return;
+
+        const sections = ['posts', 'categories', 'tags'].map(id => ({
+            id,
+            el: document.getElementById(id),
+            link: document.querySelector(`.nav-links a[data-section="${id}"]`)
+        }));
+
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 40);
+
+            let cur = '';
+            sections.forEach(s => {
+                if (s.el && s.el.getBoundingClientRect().top <= 120) cur = s.id;
+            });
+            sections.forEach(s => {
+                if (s.link) s.link.classList.toggle('active', s.id === cur);
+            });
+        }, { passive: true });
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('.nav-links a[data-section]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                const target = document.getElementById(a.dataset.section);
+                if (target) window.scrollTo({ top: target.offsetTop - 70, behavior: 'smooth' });
+            });
+        });
+
+        // Hero-down & browse-btn
+        ['hero-down', 'browse-btn'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('click', () => {
+                const posts = document.getElementById('posts');
+                if (posts) window.scrollTo({ top: posts.offsetTop - 70, behavior: 'smooth' });
             });
         });
     };
 
     // ================================
-    // 8. Post Search
+    // 10. 3D Card Tilt
     // ================================
-    const initPostSearch = () => {
-        const searchInput = document.getElementById('post-search');
-        const clearBtn = document.getElementById('search-clear');
-        const postsGrid = document.getElementById('posts-grid');
-        const noResults = document.getElementById('no-results');
-        const postCards = document.querySelectorAll('.post-card');
+    let _tiltEnabled = true;
 
-        if (!searchInput || postCards.length === 0) return;
-
-        const filterPosts = (query) => {
-            const searchTerm = query.toLowerCase().trim();
-            let visibleCount = 0;
-
-            postCards.forEach(card => {
-                const title = card.dataset.title || '';
-                const excerpt = card.dataset.excerpt || '';
-                const category = (card.dataset.category || '').toLowerCase();
-
-                const matches = title.includes(searchTerm) ||
-                    excerpt.includes(searchTerm) ||
-                    category.includes(searchTerm);
-
-                if (searchTerm === '' || matches) {
-                    card.style.display = '';
-                    card.classList.add('revealed');
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
+    const initCardTilt = () => {
+        document.querySelectorAll('.post-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                if (!_tiltEnabled) return;
+                const r = card.getBoundingClientRect();
+                const x = (e.clientX - r.left) / r.width - 0.5;
+                const y = (e.clientY - r.top) / r.height - 0.5;
+                card.style.transform = `perspective(700px) rotateY(${x * 9}deg) rotateX(${-y * 9}deg) translateZ(6px)`;
             });
+            card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+        });
+    };
 
-            // Show/hide no results message
-            if (noResults) {
-                noResults.style.display = visibleCount === 0 && searchTerm !== '' ? 'block' : 'none';
-            }
+    // ================================
+    // 11. Tweaks Panel
+    // ================================
+    const initTweaks = () => {
+        const btn = document.getElementById('tweaks-btn');
+        const panel = document.getElementById('tweaks-panel');
+        const closeBtn = document.getElementById('tweaks-close');
+        const dragHandle = document.getElementById('tweaks-drag-handle');
 
-            // Show/hide clear button
-            if (clearBtn) {
-                clearBtn.style.display = searchTerm !== '' ? 'block' : 'none';
-            }
-        };
+        if (!btn || !panel) return;
 
-        searchInput.addEventListener('input', (e) => {
-            filterPosts(e.target.value);
+        // Open / close
+        btn.addEventListener('click', e => {
+            e.stopPropagation();
+            const hidden = panel.classList.toggle('hidden');
+            btn.setAttribute('aria-expanded', !hidden);
         });
 
-        if (clearBtn) {
-            clearBtn.addEventListener('click', () => {
-                searchInput.value = '';
-                filterPosts('');
-                searchInput.focus();
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                panel.classList.add('hidden');
+                btn.setAttribute('aria-expanded', 'false');
             });
         }
-    };
 
-    // ================================
-    // 9. Lazy Load Post Images
-    // ================================
-    const initLazyImages = () => {
-        const images = document.querySelectorAll('.page__content img');
-        if (images.length === 0) return;
-
-        images.forEach((img, index) => {
-            // Skip first image (likely above the fold)
-            if (index === 0) return;
-            img.setAttribute('loading', 'lazy');
-            img.setAttribute('decoding', 'async');
+        document.addEventListener('click', e => {
+            if (!btn.contains(e.target) && !panel.contains(e.target)) {
+                panel.classList.add('hidden');
+                btn.setAttribute('aria-expanded', 'false');
+            }
         });
+
+        // Draggable panel
+        if (dragHandle) {
+            let ox = 20, oy = 20;
+            dragHandle.addEventListener('mousedown', e => {
+                const r = panel.getBoundingClientRect();
+                const sx = e.clientX, sy = e.clientY;
+                const startR = window.innerWidth - r.right;
+                const startB = window.innerHeight - r.bottom;
+
+                const onMove = ev => {
+                    ox = Math.max(8, Math.min(window.innerWidth - panel.offsetWidth - 8, startR - (ev.clientX - sx)));
+                    oy = Math.max(8, Math.min(window.innerHeight - panel.offsetHeight - 8, startB - (ev.clientY - sy)));
+                    panel.style.right = ox + 'px';
+                    panel.style.bottom = oy + 'px';
+                };
+                const onUp = () => {
+                    window.removeEventListener('mousemove', onMove);
+                    window.removeEventListener('mouseup', onUp);
+                };
+                window.addEventListener('mousemove', onMove);
+                window.addEventListener('mouseup', onUp);
+                e.preventDefault();
+            });
+        }
+
+        // Accent Palette
+        const PALETTES = {
+            default: { accent: 'oklch(72% 0.20 210)', accent2: 'oklch(63% 0.22 285)', rgb: '0,204,255', rgb2: '136,85,255' },
+            coral:   { accent: '#ff6b4a', accent2: '#ffb830', rgb: '255,107,74', rgb2: '255,184,48' },
+            mint:    { accent: '#00e5b0', accent2: '#0099ff', rgb: '0,229,176', rgb2: '0,153,255' },
+            rose:    { accent: '#ff4d8d', accent2: '#ff8c42', rgb: '255,77,141', rgb2: '255,140,66' },
+        };
+        let activePalette = 'default';
+
+        function applyPalette(key) {
+            const p = PALETTES[key];
+            if (!p) return;
+            activePalette = key;
+            const root = document.documentElement;
+            root.style.setProperty('--accent', p.accent);
+            root.style.setProperty('--accent-2', p.accent2);
+            root.style.setProperty('--accent-rgb', p.rgb);
+            root.style.setProperty('--accent-2-rgb', p.rgb2);
+            document.querySelectorAll('#palette-chips .twk-chip').forEach(c => {
+                const on = c.dataset.palette === key;
+                c.dataset.on = on ? '1' : '0';
+                c.setAttribute('aria-checked', on);
+            });
+        }
+
+        function resetPalette() {
+            ['--accent', '--accent-2', '--accent-rgb', '--accent-2-rgb'].forEach(p =>
+                document.documentElement.style.removeProperty(p)
+            );
+        }
+
+        const paletteChips = document.getElementById('palette-chips');
+        if (paletteChips) {
+            paletteChips.addEventListener('click', e => {
+                const chip = e.target.closest('.twk-chip');
+                if (!chip) return;
+                const key = chip.dataset.palette;
+                if (key === activePalette) return;
+                if (key === 'default') {
+                    resetPalette();
+                    activePalette = 'default';
+                    document.querySelectorAll('#palette-chips .twk-chip').forEach(c => {
+                        c.dataset.on = c.dataset.palette === 'default' ? '1' : '0';
+                        c.setAttribute('aria-checked', c.dataset.palette === 'default');
+                    });
+                } else {
+                    applyPalette(key);
+                }
+            });
+        }
+
+        // Reset palette on theme change
+        document.querySelectorAll('.theme-opt').forEach(opt => {
+            opt.addEventListener('click', () => {
+                resetPalette();
+                activePalette = 'default';
+                document.querySelectorAll('#palette-chips .twk-chip').forEach(c => {
+                    c.dataset.on = c.dataset.palette === 'default' ? '1' : '0';
+                    c.setAttribute('aria-checked', c.dataset.palette === 'default');
+                });
+            });
+        });
+
+        // Card Density
+        const DENSITIES = {
+            compact: { pad: '16px 18px 14px', gap: '16px' },
+            regular: { pad: '26px 26px 22px', gap: '26px' },
+            comfy:   { pad: '34px 34px 28px', gap: '36px' },
+        };
+        const seg = document.getElementById('density-seg');
+        const thumb = document.getElementById('density-thumb');
+        let activeDensity = 'regular';
+
+        if (seg && thumb) {
+            const densityBtns = seg.querySelectorAll('button[data-density]');
+            const n = densityBtns.length;
+
+            function updateThumb(idx) {
+                thumb.style.left = `calc(2px + ${idx} * (100% - 4px) / ${n})`;
+                thumb.style.width = `calc((100% - 4px) / ${n})`;
+            }
+            updateThumb(1); // Regular is default
+
+            function applyDensity(key) {
+                const d = DENSITIES[key];
+                if (!d) return;
+                activeDensity = key;
+                const grid = document.getElementById('posts-grid');
+                if (grid) grid.style.gap = d.gap;
+                document.querySelectorAll('.post-card-link').forEach(l => { l.style.padding = d.pad; });
+                densityBtns.forEach((b, i) => {
+                    const on = b.dataset.density === key;
+                    b.setAttribute('aria-checked', on);
+                    if (on) updateThumb(i);
+                });
+            }
+
+            seg.addEventListener('click', e => {
+                const b = e.target.closest('button[data-density]');
+                if (!b) return;
+                applyDensity(b.dataset.density);
+            });
+        }
+
+        // Visual Effect Toggles
+        function initToggle(id, onEnable, onDisable) {
+            const toggle = document.getElementById(id);
+            if (!toggle) return;
+            toggle.addEventListener('click', () => {
+                const on = toggle.dataset.on === '1';
+                toggle.dataset.on = on ? '0' : '1';
+                toggle.setAttribute('aria-checked', !on);
+                if (on) onDisable(); else onEnable();
+            });
+        }
+
+        initToggle('particles-toggle',
+            () => { const c = document.getElementById('hero-canvas'); if (c) c.style.display = ''; },
+            () => { const c = document.getElementById('hero-canvas'); if (c) c.style.display = 'none'; }
+        );
+
+        initToggle('tilt-toggle',
+            () => { _tiltEnabled = true; },
+            () => {
+                _tiltEnabled = false;
+                document.querySelectorAll('.post-card').forEach(c => { c.style.transform = ''; });
+            }
+        );
+
+        initToggle('cursor-toggle',
+            () => {
+                const dot = document.getElementById('cursor-dot');
+                const ring = document.getElementById('cursor-ring');
+                if (dot) dot.style.display = '';
+                if (ring) ring.style.display = '';
+                document.body.style.cursor = 'none';
+            },
+            () => {
+                const dot = document.getElementById('cursor-dot');
+                const ring = document.getElementById('cursor-ring');
+                if (dot) dot.style.display = 'none';
+                if (ring) ring.style.display = 'none';
+                document.body.style.cursor = '';
+            }
+        );
     };
 
     // ================================
-    // 10. Layout Width Toggle
+    // 12. Layout Width Toggle
     // ================================
     const initLayoutToggle = () => {
         const toggleBtn = document.getElementById('layout-toggle');
@@ -272,7 +569,6 @@
         const icon = toggleBtn.querySelector('i');
         const body = document.body;
 
-        // Restore saved preference
         const savedLayout = localStorage.getItem('layout-width');
         if (savedLayout === 'wide') {
             body.classList.add('wide');
@@ -283,26 +579,20 @@
         toggleBtn.addEventListener('click', () => {
             const isWide = body.classList.toggle('wide');
             toggleBtn.classList.toggle('is-wide', isWide);
-
-            if (icon) {
-                icon.className = isWide ? 'fas fa-compress-alt' : 'fas fa-expand-alt';
-            }
-
+            if (icon) icon.className = isWide ? 'fas fa-compress-alt' : 'fas fa-expand-alt';
             localStorage.setItem('layout-width', isWide ? 'wide' : 'focused');
         });
     };
 
     // ================================
-    // 11. Masthead background on scroll
+    // 13. Lazy Load Post Images
     // ================================
-    const initMastheadScroll = () => {
-        const masthead = document.querySelector('.masthead');
-        if (!masthead) return;
-        const onScroll = () => {
-            masthead.classList.toggle('scrolled', window.scrollY > 30);
-        };
-        window.addEventListener('scroll', onScroll, { passive: true });
-        onScroll();
+    const initLazyImages = () => {
+        document.querySelectorAll('.page__content img').forEach((img, index) => {
+            if (index === 0) return;
+            img.setAttribute('loading', 'lazy');
+            img.setAttribute('decoding', 'async');
+        });
     };
 
     // ================================
@@ -310,17 +600,19 @@
     // ================================
     document.addEventListener('DOMContentLoaded', () => {
         initScrollReveal();
+        initCardReveal();
         initReadingProgress();
         initBackToTop();
         initCategoryFilter();
-        initCardTilt();
-        initShareButtons();
-        initSmoothScroll();
+        buildTaxonomy();
         initPostSearch();
-        initLazyImages();
-        initLayoutToggle();
+        initCounters();
         initMastheadScroll();
+        initCardTilt();
+        initTweaks();
+        initShareButtons();
+        initLayoutToggle();
+        initLazyImages();
     });
 
 })();
-

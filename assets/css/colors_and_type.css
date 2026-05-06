@@ -1,0 +1,379 @@
+/* ================================================================
+   BIBHASH MITRA — DESIGN SYSTEM
+   colors_and_type.css
+   Base + Semantic CSS Variables for all surfaces and typography
+   ================================================================ */
+
+/* ── GOOGLE FONTS ─────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Fira+Code:wght@400;500&family=Bangers&display=swap');
+
+/* ================================================================
+   COLOR TOKENS — 5 THEMES
+   Default / dark theme is the canonical brand theme.
+   ================================================================ */
+
+/* ── DARK (default / canonical) ───────────────────────────────── */
+:root,
+[data-theme="dark"] {
+
+  /* === Base surfaces === */
+  --bg:          #06060f;
+  --surface:     #0d0d1e;
+  --surface-2:   #131326;
+  --card-bg:     #131326;
+  --nav-blur:    rgba(6, 6, 15, 0.88);
+
+  /* === Accent / brand colors === */
+  --accent:      oklch(72% 0.20 210);    /* ≈ #00ccff  cyan-blue  */
+  --accent-hex:  #00ccff;                /* safe fallback */
+  --accent-2:    oklch(63% 0.22 285);    /* ≈ #8855ff  purple     */
+  --accent-2-hex:#8855ff;
+
+  /* === Text colors === */
+  --text:        #c2c7df;
+  --text-muted:  #606480;
+  --heading-color: #eaecf8;
+
+  /* === Borders === */
+  --border:        rgba(130, 140, 200, 0.10);
+  --border-hover:  rgba(130, 140, 200, 0.28);
+
+  /* === Gradients === */
+  --hero-grad:   linear-gradient(135deg, #eaecf8 0%, oklch(82% 0.12 220) 40%, oklch(70% 0.22 285) 100%);
+  --accent-grad: linear-gradient(135deg, var(--accent), var(--accent-2));
+
+  /* === Shadows / glows === */
+  --glow:    0 0 40px oklch(72% 0.20 210 / 0.22);
+  --glow2:   0 0 40px oklch(63% 0.22 285 / 0.18);
+  --glow-strong: 0 0 60px oklch(72% 0.20 210 / 0.40);
+  --shadow:  0 1px 3px rgba(0,0,0,0.50), 0 1px 2px rgba(0,0,0,0.60);
+  --shadow-lg: 0 24px 48px rgba(0,0,0,0.40);
+
+  /* === Chart === */
+  --chart-grid: rgba(130, 140, 200, 0.14);
+  --chart-text: #c2c7df;
+
+  /* === Cursor === */
+  --cursor-color: #fff;
+
+  /* === Timing === */
+  --t:    0.35s;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* === Radii === */
+  --radius:    12px;
+  --radius-lg: 20px;
+  --radius-pill: 50px;
+  --radius-tag:  20px;
+}
+
+/* ── LIGHT ────────────────────────────────────────────────────── */
+[data-theme="light"] {
+  --bg:            #f6f6fb;
+  --surface:       #ffffff;
+  --surface-2:     #eeeef8;
+  --card-bg:       #ffffff;
+  --nav-blur:      rgba(246, 246, 251, 0.92);
+  --accent:        oklch(48% 0.22 250);
+  --accent-hex:    #2a5fcc;
+  --accent-2:      oklch(50% 0.20 310);
+  --accent-2-hex:  #9944cc;
+  --text:          #2a2c3e;
+  --text-muted:    #7a7d96;
+  --heading-color: #181a2e;
+  --border:        rgba(50, 60, 120, 0.12);
+  --border-hover:  rgba(50, 60, 120, 0.28);
+  --hero-grad:     linear-gradient(135deg, #181a2e 0%, oklch(40% 0.22 250) 50%, oklch(45% 0.20 310) 100%);
+  --glow:          0 4px 24px rgba(50, 60, 180, 0.12);
+  --glow2:         0 4px 24px rgba(100, 50, 180, 0.10);
+  --chart-grid:    rgba(50, 60, 120, 0.12);
+  --chart-text:    #2a2c3e;
+  --cursor-color:  #181a2e;
+}
+
+/* ── BATMAN ───────────────────────────────────────────────────── */
+[data-theme="batman"] {
+  --bg:            #000000;
+  --surface:       #0e0e0e;
+  --surface-2:     #1a1a1a;
+  --card-bg:       #0e0e0e;
+  --nav-blur:      rgba(0, 0, 0, 0.92);
+  --accent:        #FFE919;
+  --accent-hex:    #FFE919;
+  --accent-2:      #ff3333;
+  --accent-2-hex:  #ff3333;
+  --text:          #e0e0e0;
+  --text-muted:    #888888;
+  --heading-color: #FFE919;
+  --border:        rgba(255, 233, 25, 0.15);
+  --border-hover:  rgba(255, 233, 25, 0.40);
+  --hero-grad:     linear-gradient(135deg, #fff7a0 0%, #FFE919 50%, #ffb300 100%);
+  --glow:          0 0 30px rgba(255, 233, 25, 0.35);
+  --glow2:         0 0 30px rgba(255, 50, 50, 0.25);
+  --chart-grid:    rgba(255, 233, 25, 0.15);
+  --chart-text:    #FFE919;
+  --cursor-color:  #FFE919;
+}
+
+/* ── CYBERPUNK ────────────────────────────────────────────────── */
+[data-theme="cyberpunk"] {
+  --bg:            #06000e;
+  --surface:       #0f0020;
+  --surface-2:     #18003a;
+  --card-bg:       #0f0020;
+  --nav-blur:      rgba(6, 0, 14, 0.92);
+  --accent:        #ff0080;
+  --accent-hex:    #ff0080;
+  --accent-2:      #00ffcc;
+  --accent-2-hex:  #00ffcc;
+  --text:          #e0c8f0;
+  --text-muted:    #8866aa;
+  --heading-color: #f0d0ff;
+  --border:        rgba(255, 0, 128, 0.15);
+  --border-hover:  rgba(255, 0, 128, 0.38);
+  --hero-grad:     linear-gradient(135deg, #ff0080 0%, #cc00ff 50%, #00ffcc 100%);
+  --glow:          0 0 30px rgba(255, 0, 128, 0.35);
+  --glow2:         0 0 30px rgba(0, 255, 204, 0.25);
+  --chart-grid:    rgba(255, 0, 128, 0.15);
+  --chart-text:    #e0c8f0;
+  --cursor-color:  #ff0080;
+}
+
+/* ── OCEAN ────────────────────────────────────────────────────── */
+[data-theme="ocean"] {
+  --bg:            #010d1a;
+  --surface:       #071a2e;
+  --surface-2:     #0c2440;
+  --card-bg:       #071a2e;
+  --nav-blur:      rgba(1, 13, 26, 0.92);
+  --accent:        #00e5b0;
+  --accent-hex:    #00e5b0;
+  --accent-2:      #0099ff;
+  --accent-2-hex:  #0099ff;
+  --text:          #b0d0e8;
+  --text-muted:    #4a6a80;
+  --heading-color: #d8f0f8;
+  --border:        rgba(0, 229, 176, 0.12);
+  --border-hover:  rgba(0, 229, 176, 0.32);
+  --hero-grad:     linear-gradient(135deg, #d8f0f8 0%, #00e5b0 40%, #0099ff 100%);
+  --glow:          0 0 30px rgba(0, 229, 176, 0.28);
+  --glow2:         0 0 30px rgba(0, 153, 255, 0.22);
+  --chart-grid:    rgba(0, 229, 176, 0.12);
+  --chart-text:    #b0d0e8;
+  --cursor-color:  #00e5b0;
+}
+
+/* ================================================================
+   SEMANTIC COLOR ALIASES
+   Use these in component code rather than raw token names.
+   ================================================================ */
+:root,
+[data-theme="dark"],
+[data-theme="light"],
+[data-theme="batman"],
+[data-theme="cyberpunk"],
+[data-theme="ocean"] {
+  /* Foreground hierarchy */
+  --fg1:       var(--heading-color);   /* Primary headings */
+  --fg2:       var(--text);            /* Body text */
+  --fg3:       var(--text-muted);      /* Captions, labels, muted */
+
+  /* Interactive */
+  --color-link:        var(--accent);
+  --color-link-hover:  var(--heading-color);
+  --color-cta-bg:      var(--accent);
+  --color-cta-text:    var(--bg);
+
+  /* Surfaces */
+  --surface-page:      var(--bg);
+  --surface-raised:    var(--surface);
+  --surface-inset:     var(--surface-2);
+  --surface-card:      var(--card-bg);
+
+  /* Border */
+  --border-default:    var(--border);
+  --border-active:     var(--accent);
+
+  /* Status tags (fixed, not theme-aware) */
+  --tag-aws:       #FF9900;
+  --tag-aws-text:  #000000;
+  --tag-ms:        #00a4ef;
+  --tag-ms-text:   #000000;
+  --tag-google:    #4285f4;
+  --tag-google-text: #ffffff;
+  --tag-ibm:       #054ada;
+  --tag-ibm-text:  #ffffff;
+  --tag-coursera:  #0056d2;
+  --tag-coursera-text: #ffffff;
+}
+
+/* ================================================================
+   TYPOGRAPHY — BASE
+   ================================================================ */
+:root {
+  /* Font families */
+  --font-display:  'Space Grotesk', sans-serif;
+  --font-body:     'Inter', sans-serif;
+  --font-mono:     'Fira Code', monospace;
+  --font-batman:   'Bangers', cursive;   /* Batman theme only */
+
+  /* Font sizes — fluid clamp scale */
+  --fs-hero:    clamp(3.8rem,  10vw,  9.5rem);  /* hero-name */
+  --fs-h1:      clamp(3.0rem,  7vw,   7.0rem);
+  --fs-h2:      clamp(2.0rem,  4.5vw, 3.8rem);  /* section heading */
+  --fs-h3:      1.25rem;
+  --fs-h4:      1.05rem;
+  --fs-body:    1rem;
+  --fs-body-sm: 0.88rem;
+  --fs-body-xs: 0.8rem;
+  --fs-label:   0.75rem;    /* mono labels */
+  --fs-tag:     0.72–0.76rem; /* skill/cert tags */
+  --fs-caption: 0.68rem;
+
+  /* Line heights */
+  --lh-tight:   0.92;
+  --lh-heading: 1.1;
+  --lh-body:    1.6;
+  --lh-relaxed: 1.75;
+
+  /* Letter spacing */
+  --ls-mono-label: 0.2em;
+  --ls-mono-sub:   0.1em;
+  --ls-hero:       -0.03em;
+  --ls-heading:    -0.02em;
+}
+
+/* ================================================================
+   SEMANTIC TYPOGRAPHY RULES
+   Apply these directly to elements.
+   ================================================================ */
+
+/* Reset */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: var(--lh-body);
+  overflow-x: hidden;
+}
+
+/* Headings */
+h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  line-height: var(--lh-tight);
+  color: var(--heading-color);
+  letter-spacing: var(--ls-heading);
+}
+h2 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  line-height: var(--lh-heading);
+  color: var(--heading-color);
+}
+h3 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  color: var(--heading-color);
+}
+h4 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: 600;
+  color: var(--heading-color);
+}
+
+/* Body */
+p { color: var(--text); line-height: var(--lh-body); }
+p.muted { color: var(--text-muted); }
+p.intro { font-size: 1.08rem; color: var(--heading-color); line-height: var(--lh-relaxed); }
+
+/* Links */
+a { color: var(--color-link); text-decoration: none; transition: color var(--t); }
+a:hover { color: var(--color-link-hover); }
+
+/* Code / mono */
+code, .mono {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--accent);
+}
+
+/* Section label (e.g. "01 / About") */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  color: var(--accent);
+  letter-spacing: var(--ls-mono-label);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 14px;
+}
+
+/* Sub-heading comments (e.g. "// Internships") */
+.sub-heading {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  letter-spacing: var(--ls-mono-sub);
+  text-transform: uppercase;
+}
+
+/* Hero-specific */
+.hero-name {
+  font-family: var(--font-display);
+  font-size: var(--fs-hero);
+  font-weight: 700;
+  line-height: var(--lh-tight);
+  background: var(--hero-grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: var(--ls-hero);
+}
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.hero-role {
+  font-family: var(--font-mono);
+  font-size: clamp(1rem, 2.2vw, 1.4rem);
+  color: var(--accent);
+}
+
+/* Batman overrides */
+[data-theme="batman"] h1,
+[data-theme="batman"] h2,
+[data-theme="batman"] h3 {
+  font-family: var(--font-batman) !important;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ================================================================
+   SPACING TOKENS (reference, not applied)
+   ================================================================ */
+:root {
+  --space-1:  4px;
+  --space-2:  7px;
+  --space-3:  12px;
+  --space-4:  14px;
+  --space-5:  20px;
+  --space-6:  28px;
+  --space-7:  40px;
+  --space-8:  64px;
+  --space-9:  100px;
+
+  /* Section padding */
+  --section-pad: clamp(80px, 12vw, 140px);
+  /* Container */
+  --container-max: 1200px;
+  --container-px:  clamp(20px, 5vw, 64px);
+}

@@ -139,6 +139,15 @@ body.c-click #cursor-ring { width: 24px; height: 24px; opacity: 1; }
     z-index: 1000;
 }
 
+// Inside the blog-home nav the toggle is not fixed
+nav.masthead .theme-wrap {
+    position: relative;
+    top: auto;
+    right: auto;
+    z-index: auto;
+    flex-shrink: 0;
+}
+
 .theme-icon-btn {
     background: var(--nav-blur);
     border: 1px solid var(--border);

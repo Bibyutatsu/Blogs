@@ -30,8 +30,91 @@
 </head>
 
 <body class="layout--blog-home">
-    {% include theme-toggle.html %}
     {% include reactive-ui.html %}
+
+    <!-- Nav -->
+    <nav class="masthead" id="masthead">
+        <div class="nav-inner">
+            <a href="#hero" class="site-title-link">
+                {{ site.title | default: "Bibhash's Dev Blog" }}
+                <span class="site-title-sub">// dev·log</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#posts" data-section="posts">posts</a></li>
+                <li><a href="#categories" data-section="categories">categories</a></li>
+                <li><a href="#tags" data-section="tags">tags</a></li>
+                <li><a href="https://bibyutatsu.github.io/" target="_blank" rel="noopener noreferrer">portfolio ↗</a></li>
+            </ul>
+            <div class="nav-right">
+                {% include theme-toggle.html %}
+                <button class="tweaks-btn" id="tweaks-btn" aria-label="Open tweaks panel" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    <span class="tweaks-label">Tweaks</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Tweaks Panel -->
+    <div id="tweaks-panel" class="hidden" role="dialog" aria-label="Tweaks panel">
+        <div class="twk-hd" id="tweaks-drag-handle">
+            <b>Tweaks</b>
+            <button class="twk-x" id="tweaks-close" aria-label="Close tweaks">✕</button>
+        </div>
+        <div class="twk-body">
+            <div class="twk-sect">Accent Palette</div>
+            <div class="twk-row">
+                <div class="twk-chips" id="palette-chips" role="radiogroup" aria-label="Accent palette">
+                    <button class="twk-chip" data-on="1" data-palette="default" role="radio" aria-checked="true"
+                        title="Cyan / Purple" style="background:#00ccff">
+                        <div class="twk-chip-stripe" style="background:#8855ff"></div>
+                    </button>
+                    <button class="twk-chip" data-on="0" data-palette="coral" role="radio" aria-checked="false"
+                        title="Coral / Gold" style="background:#ff6b4a">
+                        <div class="twk-chip-stripe" style="background:#ffb830"></div>
+                    </button>
+                    <button class="twk-chip" data-on="0" data-palette="mint" role="radio" aria-checked="false"
+                        title="Mint / Blue" style="background:#00e5b0">
+                        <div class="twk-chip-stripe" style="background:#0099ff"></div>
+                    </button>
+                    <button class="twk-chip" data-on="0" data-palette="rose" role="radio" aria-checked="false"
+                        title="Rose / Orange" style="background:#ff4d8d">
+                        <div class="twk-chip-stripe" style="background:#ff8c42"></div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="twk-sect">Card Density</div>
+            <div class="twk-row">
+                <div class="twk-seg" id="density-seg" role="radiogroup" aria-label="Card density">
+                    <div class="twk-seg-thumb" id="density-thumb"></div>
+                    <button type="button" role="radio" aria-checked="false" data-density="compact">Compact</button>
+                    <button type="button" role="radio" aria-checked="true" data-density="regular">Regular</button>
+                    <button type="button" role="radio" aria-checked="false" data-density="comfy">Comfy</button>
+                </div>
+            </div>
+
+            <div class="twk-sect">Visual Effects</div>
+            <div class="twk-row twk-row-h">
+                <span class="twk-lbl">Particle FX</span>
+                <button type="button" class="twk-toggle" id="particles-toggle" data-on="1" role="switch"
+                    aria-checked="true" aria-label="Toggle particles"><i></i></button>
+            </div>
+            <div class="twk-row twk-row-h">
+                <span class="twk-lbl">3D Card Tilt</span>
+                <button type="button" class="twk-toggle" id="tilt-toggle" data-on="1" role="switch"
+                    aria-checked="true" aria-label="Toggle 3D tilt"><i></i></button>
+            </div>
+            <div class="twk-row twk-row-h">
+                <span class="twk-lbl">Custom Cursor</span>
+                <button type="button" class="twk-toggle" id="cursor-toggle" data-on="1" role="switch"
+                    aria-checked="true" aria-label="Toggle custom cursor"><i></i></button>
+            </div>
+        </div>
+    </div>
 
     <!-- Hero Section with Particle Animation -->
     <section id="hero">
@@ -39,48 +122,72 @@
 
         <div class="hero-container">
             <div class="hero-image">
-                <img src="{{ site.author.avatar }}" alt="{{ site.author.name }}" class="profile-img">
+                <img src="{{ site.author.avatar }}" alt="{{ site.author.name }}" class="profile-img" id="profile-img">
             </div>
             <div class="hero-content">
+                <p class="hero-eyebrow">// senior data scientist &amp; ai/ml engineer</p>
                 <h1>{{ site.title | default: "Bibhash's Dev Blog" }}</h1>
-                <h2>{{ site.subtitle | default: "AI/ML Insights & Projects" }}</h2>
-                <p class="tagline">{{ site.description }}</p>
+                <h2>{{ site.subtitle | default: "AI/ML Insights &amp; Projects" }}</h2>
+                <p class="hero-tagline">{{ site.description }}</p>
                 <div class="hero-buttons">
-                    <a href="#posts" class="btn-primary">
-                        <i class="fas fa-arrow-down"></i> Browse Posts
+                    <a href="#posts" class="btn-primary" id="browse-btn">
+                        <i class="fas fa-arrow-down" aria-hidden="true"></i> Browse Posts
                     </a>
                     <a href="https://bibyutatsu.github.io/" class="btn-outline" target="_blank"
                         rel="noopener noreferrer">
-                        <i class="fas fa-briefcase"></i> Portfolio
+                        Portfolio ↗
                     </a>
                 </div>
             </div>
         </div>
 
-        <div id="hero-down">
-            <span><i class="fas fa-chevron-down"></i></span>
+        <div id="hero-down" role="button" aria-label="Scroll down" tabindex="0">
+            <span><i class="fas fa-chevron-down" aria-hidden="true"></i></span>
         </div>
     </section>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar reveal">
+        <div class="stats-inner">
+            <div class="stat-item">
+                <div class="stat-num" data-target="{{ site.posts.size }}">0</div>
+                <div class="stat-label">Posts Published</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num" data-target="{{ site.categories.size }}">0</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num" data-target="{{ site.tags.size }}">0</div>
+                <div class="stat-label">Tags Covered</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">6.9+</div>
+                <div class="stat-label">Years Exp.</div>
+            </div>
+        </div>
+    </div>
 
     <!-- Posts Section -->
     <section id="posts" class="posts-section">
         <div class="container">
-            <h2 class="section-heading">All Posts</h2>
-            <p class="section-subtitle">Deep dives into AI/ML projects, tutorials, and insights</p>
+            <p class="section-label reveal">03 / Posts</p>
+            <h2 class="section-heading reveal">All Posts</h2>
+            <p class="section-subtitle reveal">Deep dives into AI/ML projects, tutorials, and insights</p>
 
             <!-- Search Bar -->
-            <div class="search-bar-container">
-                <div class="search-bar glass-card">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="post-search" placeholder="Search posts..." autocomplete="off">
-                    <button type="button" id="search-clear" class="search-clear" style="display: none;">
-                        <i class="fas fa-times"></i>
+            <div class="search-wrap reveal">
+                <div class="search-bar">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <input type="text" id="post-search" placeholder="Search posts…" autocomplete="off" aria-label="Search posts">
+                    <button type="button" id="search-clear" class="search-clear" aria-label="Clear search">
+                        <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Category Filter Pills -->
-            <div id="category-filters"></div>
+            <div id="category-filters" role="group" aria-label="Filter by category"></div>
 
             <div class="posts-grid" id="posts-grid">
                 {% assign posts = paginator.posts | default: site.posts %}
@@ -89,41 +196,54 @@
                 {% assign words = post.content | strip_html | number_of_words %}
                 {% assign wpm = site.words_per_minute | default: 200 %}
                 {% assign read_time = words | divided_by: wpm %}
-                {% if read_time < 1 %}{% assign read_time=1 %}{% endif %} {% assign category=post.categories | first %}
-                    <article class="post-card glass-card" data-category="{{ category }}"
-                    data-title="{{ post.title | downcase }}"
-                    data-excerpt="{{ post.excerpt | strip_html | downcase | truncate: 300 }}">
-                    <a href="{{ post.url | relative_url }}" class="post-card-link">
-                        <div class="post-card-header">
-                            <time class="post-date" datetime="{{ post.date | date_to_xmlschema }}">
-                                <i class="fas fa-calendar-alt"></i> {{ post.date | date: "%B %d, %Y" }}
-                            </time>
-                            <span class="post-read-time">
-                                <i class="fas fa-clock"></i> {{ read_time }} min read
-                            </span>
-                        </div>
-                        <h3 class="post-card-title">{{ post.title }}</h3>
-                        <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncate: 180 }}</p>
-                        {% if post.categories.size > 0 %}
-                        <div class="post-card-footer">
-                            <span class="category-badge">{{ category }}</span>
-                            <span class="read-more-arrow"><i class="fas fa-arrow-right"></i></span>
-                        </div>
-                        {% endif %}
-                    </a>
+                {% if read_time < 1 %}{% assign read_time=1 %}{% endif %}
+                {% assign category = post.categories | first %}
+                {% assign cats_str = post.categories | join: ',' %}
+                {% assign tags_str = post.tags | join: ',' %}
+                    <article class="post-card"
+                        data-category="{{ category }}"
+                        data-cats="{{ cats_str }}"
+                        data-tags="{{ tags_str | downcase }}"
+                        data-title="{{ post.title | downcase }}"
+                        data-excerpt="{{ post.excerpt | strip_html | downcase | truncate: 300 }}">
+                        <a href="{{ post.url | relative_url }}" class="post-card-link">
+                            <div class="post-card-header">
+                                <time class="post-date" datetime="{{ post.date | date_to_xmlschema }}">
+                                    <i class="fas fa-calendar-alt" aria-hidden="true"></i> {{ post.date | date: "%B %d, %Y" }}
+                                </time>
+                                <span class="post-read-time">
+                                    <i class="fas fa-clock" aria-hidden="true"></i> {{ read_time }} min read
+                                </span>
+                            </div>
+                            <h3 class="post-card-title">{{ post.title }}</h3>
+                            {% if post.tags.size > 0 %}
+                            <div class="post-tags">
+                                {% for tag in post.tags limit:3 %}
+                                <span class="post-tag">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncate: 180 }}</p>
+                            {% if post.categories.size > 0 %}
+                            <div class="post-card-footer">
+                                <span class="category-badge">{{ category }}</span>
+                                <span class="read-more-arrow"><i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+                            </div>
+                            {% endif %}
+                        </a>
                     </article>
                     {% endfor %}
             </div>
 
             <!-- No Results Message -->
-            <div id="no-results" class="no-posts glass-card" style="display: none;">
-                <i class="fas fa-search"></i>
+            <div id="no-results" class="no-posts" role="status" aria-live="polite" style="display: none;">
+                <i class="fas fa-search" aria-hidden="true"></i>
                 <p>No posts found matching your search.</p>
             </div>
 
             {% if site.posts.size == 0 %}
-            <div class="no-posts glass-card">
-                <i class="fas fa-pencil-alt"></i>
+            <div class="no-posts">
+                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                 <p>No posts yet. Check back soon!</p>
             </div>
             {% endif %}
@@ -132,7 +252,6 @@
             {% if paginator.total_pages > 1 %}
             <nav class="pagination-nav">
                 <ul class="pagination">
-                    <!-- Previous Button -->
                     {% if paginator.previous_page %}
                     <li class="pagination-item">
                         <a href="{{ paginator.previous_page_path | relative_url }}" class="pagination-link prev">
@@ -147,7 +266,6 @@
                     </li>
                     {% endif %}
 
-                    <!-- Page Numbers -->
                     {% for page in (1..paginator.total_pages) %}
                     <li class="pagination-item">
                         {% if page == paginator.page %}
@@ -161,7 +279,6 @@
                     </li>
                     {% endfor %}
 
-                    <!-- Next Button -->
                     {% if paginator.next_page %}
                     <li class="pagination-item">
                         <a href="{{ paginator.next_page_path | relative_url }}" class="pagination-link next">
@@ -181,18 +298,37 @@
         </div>
     </section>
 
+    <!-- Categories Section -->
+    <section id="categories" class="taxonomy-section">
+        <div class="taxonomy-inner">
+            <p class="section-label reveal">04 / Browse</p>
+            <h2 class="section-heading reveal">Categories</h2>
+            <p class="section-subtitle reveal">Filter posts by topic area</p>
+            <div class="taxonomy-grid reveal" id="categories-grid"></div>
+        </div>
+    </section>
+
+    <!-- Tags Section -->
+    <section id="tags" class="taxonomy-section taxonomy-section--notop">
+        <div class="taxonomy-inner">
+            <p class="section-label reveal">05 / Tags</p>
+            <h2 class="section-heading reveal">Tags</h2>
+            <p class="section-subtitle reveal">Explore by keyword</p>
+            <div class="taxonomy-grid reveal" id="tags-grid"></div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="blog-footer">
         <div class="container">
             <p>Built by <strong>{{ site.author.name }}</strong> &copy; {{ 'now' | date: "%Y" }}</p>
             <div class="footer-links">
                 <a href="https://bibyutatsu.github.io/" target="_blank" rel="noopener noreferrer"><i
-                        class="fas fa-home"></i> Portfolio</a>
+                        class="fas fa-home" aria-hidden="true"></i> Portfolio</a>
                 <a href="https://github.com/Bibyutatsu" target="_blank" rel="noopener noreferrer"><i
-                        class="fab fa-github"></i> GitHub</a>
+                        class="fab fa-github" aria-hidden="true"></i> GitHub</a>
                 <a href="https://www.linkedin.com/in/bibhashm/" target="_blank" rel="noopener noreferrer"><i
-                        class="fab fa-linkedin"></i>
-                    LinkedIn</a>
+                        class="fab fa-linkedin" aria-hidden="true"></i> LinkedIn</a>
             </div>
         </div>
     </footer>

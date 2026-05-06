@@ -18,7 +18,7 @@
         dot.style.top  = my + 'px';
     });
 
-    var hoverSel = 'a,button,.post-card,.glass-card,.archive__item,.theme-opt,.theme-icon-btn,.btn,.btn-primary,.btn-outline,.btn-glassy,.share-btn,.filter-pill,.pagination-link,.layout-toggle-btn,.feature__item';
+    var hoverSel = 'a,button,.post-card,.glass-card,.archive__item,.theme-opt,.theme-icon-btn,.btn,.btn-primary,.btn-outline,.btn-glassy,.share-btn,.filter-pill,.pagination-link,.layout-toggle-btn,.feature__item,.taxonomy-card,.tag-pill,.tweaks-btn,.twk-chip';
     document.addEventListener('mouseover', function (e) {
         if (e.target.closest(hoverSel)) document.body.classList.add('c-hover');
     });
