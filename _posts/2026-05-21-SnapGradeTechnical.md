@@ -5,7 +5,7 @@ title: "SnapGrade: A Classical CV Photo Intelligence Pipeline That Runs at 3.3 i
 date: 2026-05-21
 last_modified_at: 2026-05-21
 description: "How I built a fully local photo culling system using classical computer vision — no transformers, no VLMs — that runs at 3.3 images per second on an 8 GB MacBook Air and makes smart keep/reject decisions using a transparent, tunable decision layer."
-excerpt: "Classical CV + a threshold decision engine outperforms a VLM for photo culling — and fits in 8 GB of RAM at 3.3 img/s."
+excerpt: "Why classical CV — not a VLM — is the right tool for photo culling. Six metrics, a 40-line decision layer, and 3.3 img/s on 8 GB of RAM."
 categories:
   - AI
   - Developer Tools
@@ -28,17 +28,17 @@ toc_label: "On this page"
 toc_sticky: true
 ---
 
-The obvious way to build a photo culling tool in 2025 is to throw a vision-language model at it. Feed each image to a VLM, ask "is this a good photo?", parse the answer. It works, sort of. It's also slow, expensive, and — on an 8 GB MacBook Air with a modest photo library — completely impractical.
+The obvious way to build a photo culling tool in 2026 is to throw a vision-language model at it. Feed each image to a VLM, ask "is this a good photo?", parse the answer. It works — at maybe one image every few seconds, a couple of gigabytes of weights resident, and a verdict you can't audit because it's a single probability from a black box. On an 8 GB MacBook Air with a real photo library, it's a non-starter.
 
-I built **SnapGrade** to prove that classical computer vision, applied carefully, covers 95% of what makes a photo a keeper or a reject. Blurry shots, closed eyes, blown highlights, burst duplicates, horizon tilt: all of these have precise, fast, interpretable measures. No transformer needed. The system processes 3.3 images per second on the same 8 GB machine, re-runs are instant (SQLite cache), and every verdict comes with a human-readable reason string — not a probability from a black box.
+**SnapGrade** is the bet that classical computer vision, applied carefully, covers what actually makes a photo a keeper or a reject. Blur, closed eyes, blown highlights, burst duplicates, horizon tilt — each has a precise, fast, interpretable measure. No transformer required. The pipeline runs at 3.3 images per second on the same 8 GB machine, re-runs are instant (SQLite cache), and every verdict comes with a human-readable reason string instead of a confidence score.
 
-This post covers the architecture, the metrics layer, the decision engine, and the performance optimization work that got throughput from 1.9 to 3.3 img/s.
+This post walks through the architecture, the metric stack, the threshold-based decision layer, and the optimization work that took throughput from 1.9 to 3.3 img/s.
 
 ---
 
-## Architecture: Three Decoupled Layers
+## Three Layers That Share Nothing but SQLite
 
-The system has three layers that share no state except the SQLite database:
+The system has three layers that share no state except the database:
 
 ```mermaid
 flowchart TD
@@ -79,17 +79,17 @@ flowchart TD
     style M fill:#064e3b,stroke:#34d399
 ```
 
-The Analyzer is stateless — pure functions from `np.ndarray` to metric dataclasses, with no I/O. The Decision Engine is a pure function from `(metrics_dict, Thresholds) → Verdict`. The Organizer never calls either: it reads the SQLite cache. This means the UI can re-classify images by changing thresholds without re-running any CV — the metrics are already cached.
+The Analyzer is stateless — pure functions from `np.ndarray` to metric dataclasses, no I/O. The Decision Engine is a pure function from `(metrics_dict, Thresholds) → Verdict`. The Organizer never calls either: it reads SQLite. The UI can re-classify the entire library by changing thresholds without re-running any CV, because the metrics are already cached.
 
-The single source of truth is `~/.snapgrade/library.db`. Files on disk are never authoritative. Re-runs skip any image whose mtime hasn't changed, making the second pass through a 2,000-image library effectively free.
+The single source of truth is `~/.snapgrade/library.db`. Files on disk are never authoritative. Re-runs skip any image whose mtime hasn't changed, which makes the second pass through a 2,000-image library effectively free.
 
 ---
 
-## The Metrics Layer
+## Six Metrics That Earn Their Keep
 
 ### Sharpness: Three Complementary Signals
 
-A single sharpness metric is unreliable. Laplacian variance fires on noise as well as edges. Tenengrad (Sobel gradient energy) is more robust but can be fooled by high-contrast static subjects. FFT directional energy distinguishes camera shake (directional blur) from defocus (isotropic blur).
+A single sharpness metric is unreliable. Laplacian variance fires on noise as well as edges. Tenengrad (Sobel gradient energy) is more robust but can be fooled by high-contrast static subjects. FFT directional energy distinguishes camera shake (directional blur) from defocus (isotropic blur). SnapGrade combines all three.
 
 ```python
 # snapgrade/metrics/sharpness.py
@@ -105,22 +105,22 @@ def tenengrad(rgb: np.ndarray, bbox=None) -> float:
     return float(np.mean(gx * gx + gy * gy))
 ```
 
-Both operate on an optional `bbox` — the subject bounding box detected by MediaPipe. Subject-aware sharpness avoids penalizing intentional background blur (bokeh) and focuses the measurement where it matters: the face, or the primary saliency region if no face is detected.
+Both operate on an optional `bbox` — the subject region detected by MediaPipe. Subject-aware sharpness avoids penalizing intentional background blur (bokeh) and focuses measurement where it matters: the face, or the primary saliency region if no face is detected.
 
 ![Lightbox view of a night Acropolis shot with two subject bounding boxes drawn on the image — labelled SUBJECT 1 in orange and SUBJECT 2 in white — showing the exact regions used for sharpness scoring](/Blogs/assets/images/snapgrade/subject_bboxes.png)
 *The bounding boxes the analyzer used are visible in the UI. The orange and white rectangles are the exact regions Laplacian and Tenengrad were computed on — not the full frame.*
 
-The combined `score` (0..1) feeds the decision engine. A score below 0.30 is an automatic reject; above 0.55 is keeper-quality sharpness.
+The combined `score` (0..1) feeds the decision engine. Below 0.30 is an automatic reject; above 0.55 is keeper-quality.
 
 ### Blink Detection: Eye Aspect Ratio
 
-Closed-eye detection uses MediaPipe FaceMesh to extract 468 facial landmarks per detected face, then computes the **Eye Aspect Ratio (EAR)** — the ratio of vertical to horizontal eye extent. Values below 0.20 indicate a closed or nearly-closed eye.
+Closed-eye detection uses MediaPipe FaceMesh to extract 468 facial landmarks per detected face, then computes the **Eye Aspect Ratio (EAR)** — vertical eye extent over horizontal. Below 0.20 indicates a closed or nearly-closed eye.
 
-The key design choice here: EAR is measured per face, and `any_closed = True` if *any* face in the frame has a closed eye. For group portraits this is conservative by design — one blinking person rejects the frame. The threshold (0.20) and the `reject_closed_eyes` flag are both user-configurable via the `Thresholds` dataclass.
+The design choice that matters: EAR is per-face, and `any_closed = True` if *any* face in the frame has a closed eye. For group portraits this is conservative on purpose — one blinking person rejects the frame. Both the threshold and the `reject_closed_eyes` flag are configurable.
 
 ### Burst Grouping: Union-Find on Perceptual Hashes
 
-Rapid-fire bursts are grouped by two criteria: perceptual hash distance (64-bit pHash, Hamming distance ≤ 10 bits) and capture timestamp proximity (within 3 seconds). A union-find structure merges connected components in O(N α(N)):
+Bursts are grouped by two criteria: perceptual hash distance (64-bit pHash, Hamming distance ≤ 10 bits) and capture timestamp proximity (within 3 seconds). A union-find merges connected components in O(N α(N)):
 
 ```python
 # snapgrade/group.py
@@ -141,13 +141,13 @@ class _UnionFind:
             self.parent[rb] = ra
 ```
 
-Within each burst group, frames are ranked by a weighted quality score — sharpness 45%, eye openness 20%, aesthetic 13%, exposure 12%, smile 10%, highlight clipping −10% — and the top frame is marked `best_image_id`. The UI can filter to best-of-burst only, collapsing a 600-frame event into ~90 candidates.
+Within each burst group, frames are ranked by a weighted quality score — sharpness 45%, eye openness 20%, aesthetic 13%, exposure 12%, smile 10%, highlight clipping −10% — and the top frame is marked `best_image_id`. The UI filter "best-of-burst only" collapses a 600-frame event to roughly 90 candidates.
 
 ---
 
-## The Decision Engine
+## Thresholds Over Models: Why the Decision Layer Is 40 Lines
 
-The decision engine is a pure function with no imports from the metrics layer — it receives a plain `dict` of metric results and a `Thresholds` dataclass:
+The decision engine is a pure function with no imports from the metrics layer — it takes a plain `dict` of metric results and a `Thresholds` dataclass:
 
 ```python
 # snapgrade/decide.py
@@ -169,29 +169,31 @@ class Thresholds:
     w_aesthetic: float = 0.10
 ```
 
-Each sub-score is computed independently (exposure histogram analysis, EAR-to-score mapping, composition tilt scoring) and combined into a single 0..1 quality score. Stars are binned from the continuous score: ≥0.80 → 5 stars, ≥0.65 → 4 stars, and so on. The verdict is determined by hard threshold checks first (sharpness below `sharp_reject`, or `reject_closed_eyes` and any face blinking) — a hard reject doesn't get softened by a good aesthetic score.
+Each sub-score is computed independently (exposure histogram analysis, EAR-to-score mapping, composition tilt scoring) and combined into a 0..1 quality score. Stars bin from the continuous score: ≥0.80 → 5 stars, ≥0.65 → 4 stars, and so on. Hard threshold checks come first — sharpness below `sharp_reject`, or `reject_closed_eyes` with any face blinking — so a hard reject doesn't get softened by a strong aesthetic score.
 
-The `Thresholds` dataclass serializes to JSON and is stored in the database, so the UI can modify thresholds and re-classify the entire library without touching any image file. This is what makes the Settings screen feel instant:
+The `Thresholds` dataclass serializes to JSON and lives in the database. The UI mutates it and re-classifies the whole library without touching any image file. That's why the Settings screen feels instant:
 
 ![Settings screen exposing every threshold and weight in the dataclass as a slider — sharp keeper, sharp reject, horizon tilt warning, plus weights for sharpness, exposure, eyes, aesthetic — with rule-flag toggles below](/Blogs/assets/images/snapgrade/settings.png)
 *The Settings screen is a direct projection of the `Thresholds` dataclass. Moving a slider triggers a re-classification query, not a re-analysis — the metrics are already in SQLite.*
 
+The whole thing is around 40 lines of decision logic and a dataclass. A VLM call would give you a verdict and nothing to tune.
+
 ---
 
-## Performance: From 1.9 to 3.3 img/s
+## From 1.9 to 3.3 img/s: What Actually Moved the Needle
 
-The initial pipeline ran at 1.90 img/s on 53 test images. Getting to 3.28 img/s on 2,070 images required two main changes.
+The initial pipeline ran at 1.90 img/s on 53 test images. Getting to 3.28 img/s on 2,070 images required two changes — neither in the CV.
 
-### Decode Bottleneck
+### The Decode Was the Bottleneck
 
-Profiling revealed that image decoding (rawpy for RAW, Pillow for JPEG/HEIC) dominated wall time — often more than the CV inference itself. Two fixes:
+Profiling showed image decoding (rawpy for RAW, Pillow for JPEG/HEIC) dominated wall time — often more than the CV inference itself. Two fixes:
 
-1. **PIL draft mode**: JPEG images are decoded at a reduced resolution first using Pillow's draft mode, which skips unnecessary decompress work when the full resolution isn't needed for the analysis pass.
-2. **EXIF fast path**: If an embedded JPEG thumbnail exists in the RAW file's EXIF data, SnapGrade uses that instead of full RAW decode. For culling purposes, a 1200px embedded JPEG is sufficient for sharpness and exposure metrics.
+1. **PIL draft mode.** JPEGs are decoded at a reduced resolution using Pillow's draft mode, which skips decompression work when full resolution isn't needed for the analysis pass.
+2. **EXIF fast path.** If an embedded JPEG thumbnail exists in the RAW's EXIF, SnapGrade uses that instead of a full RAW decode. A 1200px embedded preview is sufficient for sharpness and exposure metrics.
 
-### Thread-Local YuNet Model
+### Thread-Local YuNet
 
-MediaPipe and OpenCV's face detector (YuNet) are not thread-safe when shared across threads. The initial implementation used a single global model instance, which serialized all inference through a lock. The fix: thread-local storage via `threading.local()` so each worker thread initializes its own model copy.
+MediaPipe and OpenCV's YuNet face detector aren't thread-safe across threads. The first implementation shared a single global model instance, which serialized all inference through a lock. The fix is thread-local storage so each worker initializes its own model:
 
 ```python
 _tls = threading.local()
@@ -202,9 +204,9 @@ def _get_detector() -> cv2.FaceDetectorYN:
     return _tls.detector
 ```
 
-This eliminated the lock contention and allowed genuine parallel inference.
+Lock contention disappeared and parallel inference became real.
 
-### Benchmark Results
+### Numbers
 
 | Corpus | Phase | Wall time | Throughput | Notes |
 |---|---|---|---|---|
@@ -216,17 +218,17 @@ The cached re-run at 58.5 MB RSS is the number I'm most satisfied with — the s
 
 ---
 
-## SQLite as the Single Source of Truth
+## SQLite Is the Index
 
-All analysis results live in `~/.snapgrade/library.db`. The schema uses a JSON blob column for metrics rather than individual columns, which means adding a new metric never requires a migration — it just appears in the blob on the next analysis run. Columns are only promoted to dedicated schema fields when they need to be indexed or filtered (e.g., `verdict` and `stars` have dedicated columns because the UI filters on them constantly).
+All analysis results live in `~/.snapgrade/library.db`. The schema uses a JSON blob column for metrics rather than individual columns — adding a metric never needs a migration, it just appears in the blob on the next analysis run. Fields are promoted to dedicated columns only when they need indexing (`verdict` and `stars`, because the UI filters on them constantly).
 
-WAL mode is enabled so that read-heavy UI queries don't block background ingest writes. The organizer, XMP writer, and report generator all read from this cache — they never touch image files directly.
+WAL mode is on, so read-heavy UI queries don't block background ingest writes. The organizer, XMP writer, and report generator all read this cache — they never touch image files directly.
 
-This design has one big payoff: the entire React UI is a thin client. Every filter, every threshold tweak, every burst-grouping rerun is just a SQL query against the cached metrics. There's no separate "rebuild index" step, because the index is the database and the database is the index.
+The payoff: the React UI is a thin client. Every filter, every threshold tweak, every burst-grouping rerun is a SQL query against cached metrics. There's no "rebuild index" step, because the index is the database and the database is the index.
 
 ---
 
-## Getting Started (Developer)
+## Run It Yourself
 
 ```bash
 git clone https://github.com/Bibyutatsu/SnapGrade
@@ -249,15 +251,15 @@ uv run snapgrade write-xmp /path/to/photos
 uv run pytest
 ```
 
-The optional models — aesthetic scoring (CoreML NIMA), semantic search (MobileCLIP), face clustering (InsightFace `buffalo_s`), OCR and content-type classification — are all gated behind environment variables or CLI flags. The base pipeline runs without any of them.
+The optional models — aesthetic scoring (CoreML NIMA), semantic search (MobileCLIP), face clustering (InsightFace `buffalo_s`), OCR, and content-type classification — are gated behind environment variables or CLI flags. The base pipeline runs without any of them.
 
 ---
 
-## What's Next
+## What's Still Open
 
-The next significant piece is a smarter **subject segmentation** path using the already-wired `subject_seg.py` module — separating foreground from background properly should improve sharpness scoring on images with complex depth of field. There's also an open question about whether the aesthetic NIMA model (opt-in CoreML) is pulling its weight relative to the compositional signals that are already running unconditionally.
+The next significant piece is smarter **subject segmentation** through the already-wired `subject_seg.py` module — separating foreground from background should improve sharpness scoring on images with complex depth of field. There's also an open question about whether the opt-in NIMA aesthetic model is pulling its weight relative to the compositional signals that already run unconditionally.
 
-Source, issues, and the full design rationale are on GitHub:
+Source, issues, and full design rationale on GitHub:
 
 [SnapGrade on GitHub](https://github.com/Bibyutatsu/SnapGrade){:target="_blank" rel="noopener noreferrer"}
 
