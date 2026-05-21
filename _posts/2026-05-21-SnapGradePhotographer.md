@@ -68,72 +68,127 @@ The UI opens at `http://127.0.0.1:8765`. Everything from here is point-and-click
 
 ## The Library Screen: Point and Analyze
 
-The first screen you see is **Library**. This is where you tell SnapGrade which folder to analyze.
+The first screen you see is **Library** — a single intake form titled *Open a roll*. This is where you tell SnapGrade which folder to analyze and which optional models to enable for this pass.
 
-<!-- IMAGE NEEDED: Library screen showing the folder path input and Analyze button, with a progress bar — check the ui/ directory or take a screenshot from a running instance -->
+![Library screen with folder picker, optional model toggles for scene classifier, salient subject, object detector, screenshot/document, semantic search, and post-ingest grouping](/assets/images/snapgrade/library.png)
+*The Library intake. Pick a folder, opt into the heavier models you actually need, and choose whether to run burst grouping and face clustering after analysis.*
 
 Type or paste a folder path into the input field and click **Analyze**. SnapGrade walks the folder recursively, decodes each image (JPEG, HEIC, RAW), runs the full analysis pipeline, and writes results to a local SQLite database at `~/.snapgrade/library.db`. Progress shows in real time.
 
 Re-running analysis on the same folder is fast — images that haven't changed are skipped entirely. Only new or modified files get re-processed.
 
-The Library screen also shows a live **semantic search** field if you ran analysis with semantic embeddings enabled. Type "golden hour portrait" or "wide angle mountain" and SnapGrade returns the visually closest matches using [MobileCLIP](https://github.com/apple/ml-mobileclip) embeddings — all local inference, no API call.
+Below the intake form is a live **semantic search** field labeled *Search by description*. If you opted into semantic indexing during analysis, you can type natural-language queries like "golden hour portrait" or "wide angle mountain" and SnapGrade returns the visually closest matches using [MobileCLIP](https://github.com/apple/ml-mobileclip) embeddings — all local inference, no API call.
 
 ---
 
 ## The Triage Screen: Find What to Keep
 
-**Triage** is the main working view. It shows your images in a grid with verdict chips (green for keeper, yellow for review, red for reject) and star ratings overlaid on each thumbnail.
+**Triage** is the main working view, branded as *The Contact Sheet*. It shows your images in a grid with verdict chips (green for keeper, yellow for review, red for reject) and star ratings overlaid on each thumbnail. The top bar holds folder switching, verdict tabs, a timeline scrubber, and the layout/theme toggles.
 
-<!-- IMAGE NEEDED: Triage screen showing a photo grid with keeper/review/reject chips and star overlays, and the filter panel on the left side -->
+![Triage Contact Sheet with photo grid, verdict chips, star overlays, timeline scrubber, and the detail panel showing EXIF and verdict for the selected frame](/assets/images/snapgrade/triage.png)
+*The Contact Sheet in Grid view. Verdict chips and stars overlay each thumbnail; the right-side detail panel surfaces full EXIF, the verdict, and the per-image reasons.*
 
-The left-side filter panel lets you narrow the grid along any combination of dimensions:
+### Layout Modes: Grid and Filmstrip
 
-- **Verdict**: show only keepers, only rejects, or everything
+The Triage screen supports two layout modes toggled from the top bar:
+
+* **Grid View**: A dense contact sheet showing verdict chips and star overlays directly on the thumbnails — best for scanning.
+* **Filmstrip View**: Places the active frame in a large central workspace with a horizontal, scrollable strip of thumbnails along the bottom — best for inspection. Arrow keys move through frames instantly.
+
+![Triage in Filmstrip mode: one large central frame with subject bounding box overlay and a bottom strip of thumbnails](/assets/images/snapgrade/filmstrip.png)
+*Filmstrip mode gives you a single hero frame, the bottom thumbnail strip for navigation, and the detail panel on the right.*
+
+### Subject-Aware Bounding Box Overlays
+
+When a frame is selected, SnapGrade overlays the bounding boxes it actually used during analysis — the subject regions detected by MediaPipe face detection or the saliency fallback. This isn't decorative: those boxes are what the sharpness metric was computed on. Seeing them lets you verify that the autofocus landed where you wanted it.
+
+![Lightbox view of a night Acropolis shot with two labelled subject bounding boxes — SUBJECT 1 (orange) and SUBJECT 2 (white) — drawn over the detected saliency regions](/assets/images/snapgrade/subject_bboxes.png)
+*Lightbox view with subject overlays on. The orange and white boxes are the exact regions used for subject-aware sharpness scoring.*
+
+### Filters: Every Dimension You Care About
+
+The left-side filter panel collapses by default. When you open it, you get the full filter surface — every dimension SnapGrade has indexed.
+
+![Triage with the full filter panel expanded — quality histograms, rejection flag toggles, content type and scene dropdowns, color palette wheel, and hue tolerance slider, alongside the photo grid and detail panel](/assets/images/snapgrade/triage_filters.png)
+*The full Triage filter surface. Sharpness and aesthetic histograms double as visual sliders; the colour wheel lets you anchor on dominant hues.*
+
+The filter set includes:
+
+- **Verdict**: keepers, review-needed, rejects, or everything
 - **Stars**: minimum star rating (1–5)
-- **Rejection flags**: show only blurry shots, only closed-eye shots, only over/underexposed, only tilted horizon
-- **Content type**: photos vs. screenshots vs. documents (useful if your camera roll mixes both)
+- **Quality histograms**: live sharpness and aesthetic distributions — drag to define a range visually
+- **Rejection flags**: blur, closed eyes, over/underexposure, horizon tilt — each as an independent toggle
+- **Content type**: photos vs. screenshots vs. documents
 - **Scene**: indoor, outdoor, night, food, etc.
+- **OCR / animals**: filter to frames that contain detected text or animals
+- **Colour palette**: anchor on one or more dominant hues using the colour wheel, with a ± degree tolerance slider
 - **Camera / ISO / aperture / orientation**: standard EXIF-based filters
-- **Date range**: filter to a specific shoot window
-- **Burst only**: show only frames that are part of a detected burst sequence
+- **Date range**: scrub the timeline at the top, or set explicit from/to dates
+- **Burst only / best-of-burst**: collapse to one frame per burst group
 
-Filters stack — you can ask for "all portraits shot at ISO ≥ 3200 that are keepers but have a tilt warning" in a few clicks. Clicking any image opens a detail view with the full metrics breakdown: exact sharpness score, EAR (eye aspect ratio) for each face, exposure histogram, and the reasons behind the verdict.
+Filters stack — you can ask for "all keepers shot at ISO ≥ 3200 with a warm colour cast and at least 4 stars" in three clicks.
 
 ---
 
-## Burst Screen: Pick the Best Frame Automatically
+## Bursts Screen: Pick the Best Frame Automatically
 
 If you shoot bursts — sports, kids, anything where you fire 6–10 frames per second — the **Bursts** screen is where the real time saving happens.
 
-<!-- IMAGE NEEDED: Bursts screen showing a grouped burst strip with the best-of-burst frame highlighted -->
+![Burst Comparison screen: sidebar listing four burst groups, main panel showing Burst #2 with two side-by-side frames and a BEST badge on the chosen keeper](/assets/images/snapgrade/bursts.png)
+*Burst Comparison. SnapGrade picks one BEST frame per group based on a weighted score; you can override the pick from this screen.*
 
-SnapGrade groups burst frames by perceptual hash similarity and capture timestamp. Within each group, it ranks frames by a weighted quality score (sharpness 45%, exposure 12%, aesthetic 13%, eye openness 20%, smile 10%) and marks the top frame as **best-of-burst**. You can filter the Triage view to show only best-of-burst frames, which collapses a 600-frame shoot to the 90 frames that actually matter — before you've done any manual work.
+SnapGrade groups burst frames by perceptual hash similarity and capture timestamp. Within each group, it ranks frames by a weighted quality score (sharpness 45%, exposure 12%, aesthetic 13%, eye openness 20%, smile 10%) and marks the top frame as **best-of-burst**. The Triage view can be filtered to show only best-of-burst frames, collapsing a 600-frame shoot to the 90 frames that actually matter — before you've done any manual work.
 
-The grouping threshold is tunable. By default, frames shot within 3 seconds with a perceptual hash distance under 10 bits are treated as the same burst.
+The grouping threshold is tunable. By default, frames shot within 3 seconds with a perceptual hash distance under 10 bits are treated as the same burst. You can loosen both from the CLI: `snapgrade group --hamming 14 --seconds 30`.
 
 ---
 
 ## Faces Screen: Browse by Person
 
-**Faces** clusters detected faces using local embedding models and greedy cosine similarity. Every distinct person in your library gets a cluster, and clicking a cluster shows every photo featuring that person.
+**Face Clusters** groups detected faces using local embeddings (InsightFace `buffalo_s`) and greedy cosine similarity. Every distinct person in your library gets a cluster card, and clicking *View all* filters the photo grid to every shot featuring that person.
 
-<!-- IMAGE NEEDED: Faces screen showing face cluster chips at the top and a photo grid filtered to one person below -->
+![Face Clusters screen showing one cluster card with four representative thumbnails of the same person and an appearance count](/assets/images/snapgrade/faces.png)
+*Face Clusters view. Each card represents one detected person, with the appearance count and a quick "view all" link into a filtered Triage.*
 
 This screen is particularly useful for event photography: after an engagement shoot or a birthday party, you can immediately pull every frame with a specific person and triage that subset independently.
 
-Face clustering is opt-in — run `uv run snapgrade faces` after analysis to generate the clusters, or enable it from the Library screen's post-analysis options.
+Face clustering is opt-in — run `uv run snapgrade faces` after analysis, or tick *Cluster faces* in the Library intake form's post-analysis options.
+
+---
+
+## Settings: Tune the Verdicts to Your Style
+
+Every threshold and weight that drives a verdict lives in the **Settings** screen, branded as *The Darkroom*. Move a slider, and the entire library is instantly re-classified against the new thresholds — no images are re-analyzed, because the underlying metrics are already cached.
+
+![Darkroom settings screen with sliders for sharpness keeper/reject thresholds, horizon tilt warning, weight sliders for sharpness, exposure, eyes, aesthetic, and rule-flag toggles for closed eyes and over/underexposure](/assets/images/snapgrade/settings.png)
+*The Darkroom. Sharpen acceptance, loosen rejection, or rebalance the weights — verdicts update across the whole library instantly.*
+
+The exposed controls:
+
+* **Sharp keeper threshold** (default 0.55) — above this, an image's sharpness counts as keeper-grade.
+* **Sharp reject threshold** (default 0.30) — below this, the image is an automatic reject regardless of other scores.
+* **Horizon tilt warning** (default ±3°) — surfaces as a warning chip, never auto-rejects.
+* **Weight sliders** — sharpness, exposure, eyes, aesthetic. These determine how the star rating is composed from the underlying metrics.
+* **Rule flags** — toggle hard rejections for closed eyes, overexposure, underexposure.
+
+If you shoot portraits, push the eyes weight up. If you shoot architecture, push the horizon-tilt tolerance down. The system is built to be tuned, not just used.
 
 ---
 
 ## Organize Screen: Build a Folder Hierarchy
 
-Once you've triaged your library, the **Organize** screen lets you restructure it. You define a folder template using tokens — predefined variables that expand from image metadata:
+Once you've triaged your library, the **Organize** screen — *The Hierarchy* — lets you restructure it. You define a folder template using tokens: predefined variables that expand from image metadata.
+
+![Organize screen with scope picker (all libraries), three configured hierarchy levels — date YYYY, camera model, quality:verdict — and a token reference table below listing all available tokens](/assets/images/snapgrade/organize.png)
+*The Hierarchy builder. Add ordered levels; SnapGrade previews the resulting folder tree before any file is moved.*
+
+A typical setup might be:
 
 ```text
-{year}/{month}/{scene}/{camera_make}
+{date:YYYY}/{camera_model}/{quality:verdict}
 ```
 
-SnapGrade previews the resulting folder tree before moving or symlinking anything. Available tokens include year, month, day, camera make and model, scene type, ISO bucket, verdict, star rating, event name, and more. The `/` separator nests them automatically: `{year}/{month}` produces `2025/May/`, `{year}/{month}/{scene}` produces `2025/May/outdoor/`.
+Available tokens include date components, camera make and model, scene type, ISO bucket, verdict, star rating, palette/season, GPS data, and more — all visible in the on-screen reference table. The `/` separator nests them automatically: `{year}/{month}` produces `2025/May/`, `{year}/{month}/{scene}` produces `2025/May/outdoor/`.
 
 You can choose to **move** files into the new hierarchy or create **symlinks** (leaving originals in place). Symlinks are the safer default if you're also managing files in Lightroom.
 
@@ -143,13 +198,39 @@ You can choose to **move** files into the new hierarchy or create **symlinks** (
 
 Every rating SnapGrade assigns — verdict, star count, rejection reasons — can be written to an **XMP sidecar** file stored alongside the original image. XMP is the open standard that Lightroom, darktable, Capture One, and Bridge all read natively.
 
+![Batch XMP Export screen showing a table of images with thumbnails, filenames, verdict chips, star ratings, and per-row Write/Reset buttons; verdict-tab filter and Select All toggle at the top](/assets/images/snapgrade/xmp_export.png)
+*Batch XMP Export. Filter by verdict, select what you want to write, and SnapGrade lays sidecars next to your originals.*
+
 Run the export from the CLI:
 
 ```bash
 uv run snapgrade write-xmp /path/to/your/photos
 ```
 
-Or trigger it from the UI's export button. After this, open your folder in Lightroom and the ratings are already there — five-star keepers, one-star rejects, color labels for review-flagged images. SnapGrade's triage becomes a first pass that you refine in whatever editor you prefer.
+Or trigger it from the Batch XMP Export screen. After this, open your folder in Lightroom and the ratings are already there — five-star keepers, one-star rejects, color labels for review-flagged images. SnapGrade's triage becomes a first pass that you refine in whatever editor you prefer.
+
+---
+
+## Visual Themes: Calibrate Your Environment
+
+Culling at night in a dark editing suite and culling outdoors on a bright laptop screen need different visual treatments. SnapGrade ships three themes, switchable from the top-bar dropdown — and switching is instant, with no reload.
+
+### Film Lab (default)
+
+![Triage screen in Film Lab theme — warm amber accents on near-black background with a serif title, designed for editing-suite use](/assets/images/snapgrade/theme_film_lab.png)
+*Film Lab — the default. Warm amber accents on a near-black canvas, with a film-grain feel. Best for low-light editing.*
+
+### Modern
+
+![Triage screen in Modern theme — neon orange accents on cool dark grey, with a slightly brighter background and sharper UI chrome](/assets/images/snapgrade/theme_modern.png)
+*Modern — cleaner, cooler dark mode with a sharper UI. Best for typical screen workflows.*
+
+### Light Pro
+
+![Triage screen in Light Pro theme — white background with red verdict accents and dark text, calibrated for high-contrast triage in bright environments](/assets/images/snapgrade/theme_light_pro.png)
+*Light Pro — a calibrated light mode for bright environments and colour-accurate triage. Best for daylight use on a laptop.*
+
+All three themes preserve the same layout and information density; only the colour palette and surface contrast change. Pick whichever doesn't fight your eyes for the next hour.
 
 ---
 
@@ -176,3 +257,4 @@ If you shoot more than a few hundred frames per session and are currently cullin
 [^1]: [MobileCLIP: Fast Image-Text Models through Multi-Modal Reinforced Training](https://arxiv.org/abs/2311.17091) — Apple's efficient CLIP model used for semantic search
 [^2]: [NIMA: Neural Image Assessment](https://arxiv.org/abs/1709.05424) — the aesthetic scoring model, optional CoreML inference
 [^3]: [XMP Specification](https://www.adobe.com/devnet/xmp.html) — Adobe's open metadata standard for image ratings and labels
+[^4]: [InsightFace](https://github.com/deepinsight/insightface) — face embedding model (`buffalo_s`) used for clustering
