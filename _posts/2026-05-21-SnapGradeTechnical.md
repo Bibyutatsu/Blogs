@@ -107,7 +107,7 @@ def tenengrad(rgb: np.ndarray, bbox=None) -> float:
 
 Both operate on an optional `bbox` — the subject bounding box detected by MediaPipe. Subject-aware sharpness avoids penalizing intentional background blur (bokeh) and focuses the measurement where it matters: the face, or the primary saliency region if no face is detected.
 
-![Lightbox view of a night Acropolis shot with two subject bounding boxes drawn on the image — labelled SUBJECT 1 in orange and SUBJECT 2 in white — showing the exact regions used for sharpness scoring](/assets/images/snapgrade/subject_bboxes.png)
+![Lightbox view of a night Acropolis shot with two subject bounding boxes drawn on the image — labelled SUBJECT 1 in orange and SUBJECT 2 in white — showing the exact regions used for sharpness scoring](/Blogs/assets/images/snapgrade/subject_bboxes.png)
 *The bounding boxes the analyzer used are visible in the UI. The orange and white rectangles are the exact regions Laplacian and Tenengrad were computed on — not the full frame.*
 
 The combined `score` (0..1) feeds the decision engine. A score below 0.30 is an automatic reject; above 0.55 is keeper-quality sharpness.
@@ -173,7 +173,7 @@ Each sub-score is computed independently (exposure histogram analysis, EAR-to-sc
 
 The `Thresholds` dataclass serializes to JSON and is stored in the database, so the UI can modify thresholds and re-classify the entire library without touching any image file. This is what makes the Settings screen feel instant:
 
-![Settings screen exposing every threshold and weight in the dataclass as a slider — sharp keeper, sharp reject, horizon tilt warning, plus weights for sharpness, exposure, eyes, aesthetic — with rule-flag toggles below](/assets/images/snapgrade/settings.png)
+![Settings screen exposing every threshold and weight in the dataclass as a slider — sharp keeper, sharp reject, horizon tilt warning, plus weights for sharpness, exposure, eyes, aesthetic — with rule-flag toggles below](/Blogs/assets/images/snapgrade/settings.png)
 *The Settings screen is a direct projection of the `Thresholds` dataclass. Moving a slider triggers a re-classification query, not a re-analysis — the metrics are already in SQLite.*
 
 ---
