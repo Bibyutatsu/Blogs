@@ -9,3 +9,6 @@ main:
   - title: "Portfolio"
     url: https://bibyutatsu.github.io/
     description: "Visit my portfolio website"
+  - title: "Book Store"
+    url: https://bibyutatsu.github.io/ebooks/
+    description: "Visit my ebook store"
