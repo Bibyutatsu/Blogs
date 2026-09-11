@@ -19,6 +19,7 @@ tags:
 header:
   overlay_color: "#000"
   overlay_filter: "0"
+  teaser: "/assets/images/icon.webp"
 excerpt: "A PyTorch Lightning implementation of GENTRL for generating novel molecules using VAE and Reinforcement Learning."
 description: "A PyTorch Lightning implementation of GENTRL for generating novel molecules using VAE and Reinforcement Learning."
 read_time: true
