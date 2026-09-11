@@ -19,6 +19,7 @@ This skill guides the end-to-end authoring, review, humanization, and validation
 
 For deep reference during authoring, consult the modular guides:
 
+- **Rendering Pitfalls & Historical Git Corrections**: [references/rendering-and-pitfalls.md](references/rendering-and-pitfalls.md)
 - **Front Matter Reference & Taxonomies**: [references/frontmatter-template.md](references/frontmatter-template.md)
 - **Solution-Walkthrough Narrative Pattern**: [references/narrative-structure.md](references/narrative-structure.md)
 - **Anti-AI Humanizer Checklist**: [references/anti-ai-checklist.md](references/anti-ai-checklist.md)
@@ -71,7 +72,7 @@ title: "Your Post Title Here"
 date: YYYY-MM-DD
 last_modified_at: YYYY-MM-DD
 description: "150-160 character concise summary for SEO meta tags and social sharing."
-excerpt: "1-2 punchy sentences with an optional emoji. This is the preview shown on homepage cards."
+excerpt: "1-2 punchy sentences with an optional emoji 😉. This is the preview shown on homepage cards."
 categories:
   - AI
   - Developer Tools
@@ -88,7 +89,9 @@ toc_sticky: true
 ```
 
 > [!IMPORTANT]
-> **No Duplicate H1**: Never add `# Post Title` after the front matter. Jekyll's `single` layout automatically renders `title` as the page `<h1>`. Starting the markdown body with an H1 causes duplicate titles.
+> - **Layout Must Be `single`**: Never use `layout: post`. Minimal Mistakes theme expects `layout: single` to properly load author profiles, sticky TOCs, and sidebar styles.
+> - **No Duplicate H1**: Never add `# Post Title` after the front matter. Jekyll's `single` layout automatically renders `title` as the page `<h1>`. Starting the markdown body with an H1 creates duplicate titles.
+> - **Mandatory SEO & Excerpt**: Ensure `description` (150-160 chars) and `excerpt` (1-2 sentences with punch) are populated.
 
 ### Phase 4: Narrative Architecture (The Solution-Walkthrough)
 
@@ -97,18 +100,26 @@ Draft following the proven structure from `_posts/2026-03-28-Repolect.md` and `_
 1. **Opening Hook**: 1-2 sentence core thesis and benefit statement. State what the project does and what it replaces.
 2. **The Problem**: Concrete pain point. Why naive approaches (e.g. vector search on code, expensive proprietary APIs) break down in practice.
 3. **The Solution**: Introduce the tool, repo stars, license, or core innovation.
-4. **Architecture & Design**: Break down how it works under the hood. Use ASCII diagrams or markdown tables for workflows.
+4. **Architecture & Design**: Break down how it works under the hood. Use ASCII diagrams, Markdown tables, or syntax-safe Mermaid diagrams.
 5. **Technical Deep Dive**: Walk through key files, algorithms, or configurations with syntax-highlighted code blocks (`python`, `yaml`, `bash`).
-6. **Usage Guide**: Copy-pastable commands (`curl`, CLI commands, Docker run, Python snippets).
+6. **Usage Guide**: Copy-pastable commands (`curl`, CLI commands, Docker run, Python snippets). Prefer vivid headings (*"Two Commands, Then Coffee"* over *"Getting Started"*).
 7. **Limits & Realities**: Transparently discuss edge cases, cold starts, memory constraints, or blast radiuses (builds engineering trust).
 8. **Roadmap & External Links**: What is next, version info, links to GitHub/PyPI. Use Kramdown security attributes:
    ```markdown
    [GitHub Repo](https://github.com/Bibyutatsu/Project){:target="_blank" rel="noopener noreferrer"}
    ```
-9. **Footnotes & References**: Use academic-style citations:
-   ```markdown
-   [^1]: [Reference Name](https://example.com) - Contextual description.
-   ```
+9. **Footnotes & References**: Use academic-style citations `[^1]`.
+   - **Critical Rule**: NEVER use vertical pipes (`|`) inside footnote link titles (e.g. `[Doc | API](...)`). Pipes break Kramdown's table and link parser. Use hyphens `-` instead.
+
+#### Mermaid Diagram Requirements
+When adding ````mermaid` blocks:
+- **Quote Special Characters**: Wrap any node label containing `()`, `[]`, `/`, `.`, `-`, or `<br/>` in double quotes: `Root["1. Root Probe<br/>(Reads repo summaries)"]`.
+- **Quote Subgraph Titles**: `subgraph IP ["Indexing Pipeline"]` or `subgraph "Analyzer (image → metrics)"`.
+- **Theme-Appropriate Styling**: Apply dark-palette styles so nodes are crisp against the dark theme:
+  `style Start fill:#111827,stroke:#38bdf8`
+  `style Success fill:#064e3b,stroke:#34d399`
+  `style Alert fill:#450a0a,stroke:#f87171`
+- **Blank Lines**: Always keep an empty line before and after the ````mermaid` block.
 
 ### Phase 5: Anti-AI Humanizer Pass (Rigorous De-AI-fication)
 
@@ -127,14 +138,21 @@ Apply the `/humanizer` audit to all generated prose. Run the **draft ➔ audit �
 
 ### Phase 6: Kramdown & Asset Formatting Standards
 
-1. **Images**:
-   - Store images under `assets/images/posts/` (or `assets/images/snapgrade/`).
-   - Use absolute root paths: `![Alt Text](/assets/images/posts/my-image.webp)`.
-   - **Crucial Kramdown Rule**: Always put a blank line before and after image markdown. Missing blank lines render images as raw inline text.
-2. **Quotes & Ellipses**:
+1. **Jekyll `baseurl` in Image Paths (CRITICAL)**:
+   - The site uses `baseurl: "/Blogs"` in `_config.yml`.
+   - **In Markdown body**: ALL local images **MUST** include the `/Blogs` prefix:
+     ```markdown
+     ![Screenshot](/Blogs/assets/images/posts/my-image.webp)
+     ```
+     *(Omitting `/Blogs` causes images to 404 on GitHub Pages).*
+   - **In Front Matter (`header.teaser`)**: Use `/assets/images/icon.webp` (Jekyll automatically applies `relative_url` to front matter teaser paths).
+2. **Blank Lines Around Block Elements (Mandatory Kramdown Rule)**:
+   - Always put a full blank line before AND after every image, table, blockquote, and diagram.
+   - Missing blank lines cause Kramdown to render images as inline text instead of HTML blocks.
+3. **Quotes & Ellipses**:
    - Use straight ASCII quotes (`"`, `'`), never curled quotes (`“`, `”`).
    - Use standard triple dots (`...`), never unicode ellipses (`…`).
-3. **Thematic Breaks**: Ensure `---` dividers have blank lines above and below.
+4. **Thematic Breaks**: Ensure `---` dividers have blank lines above and below.
 
 ### Phase 7: Automated Validation Pipeline
 
