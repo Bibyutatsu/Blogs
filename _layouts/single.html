@@ -49,7 +49,7 @@ layout: default
       <section class="page__content" itemprop="text">
         {% if page.toc %}
         <aside class="sidebar__right {% if page.toc_sticky %}sticky{% endif %}">
-          <nav class="toc">
+          <nav class="toc holo-card">
             <header>
               <h4 class="nav__title"><i class="fas fa-{{ page.toc_icon | default: 'file-alt' }}"></i> {{ page.toc_label
                 | default: site.data.ui-text[site.locale].toc_label | default: "On this page" }}</h4>

@@ -173,7 +173,8 @@ const Pretext = (function () {
     const cards = document.querySelectorAll('.post-card');
     if (cards.length > 0) {
       const firstCard = cards[0];
-      const cardWidth = firstCard.clientWidth - 52; // subtract padding
+      const bodyEl = firstCard.querySelector('.post-card-body') || firstCard;
+      const cardWidth = (bodyEl.clientWidth > 0 ? bodyEl.clientWidth : firstCard.clientWidth) - 48;
       if (cardWidth > 150) {
         let maxTitleH = 0;
         let maxExcerptH = 0;

@@ -22,7 +22,7 @@ tags:
   - classical-cv
 header:
   overlay_color: "#1e293b"
-  teaser: "/assets/images/icon.webp"
+  teaser: "/assets/images/posts/snapgrade.png"
 toc: true
 toc_label: "On this page"
 toc_sticky: true

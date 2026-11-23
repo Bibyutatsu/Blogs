@@ -104,8 +104,9 @@ a {
     pointer-events: none;
     z-index: 9999;
     transform: translate(-50%, -50%);
-    top: 0;
-    left: 0;
+    top: -100px;
+    left: -100px;
+    opacity: 0;
 }
 
 #cursor-dot {

@@ -170,6 +170,16 @@
                 searchInput.focus();
             });
         }
+
+        // Global '/' shortcut to focus search
+        document.addEventListener('keydown', e => {
+            if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+                e.preventDefault();
+                searchInput.focus();
+                const posts = document.getElementById('posts');
+                if (posts) window.scrollTo({ top: posts.offsetTop - 70, behavior: 'smooth' });
+            }
+        });
     };
 
     // ================================
@@ -691,6 +701,207 @@
     };
 
     // ================================
+    // 14. Code Block Copy Button with Canvas UI Shatter
+    // ================================
+    const initCodeBlockCopy = () => {
+        const codeBlocks = document.querySelectorAll('.page__content pre');
+        codeBlocks.forEach(pre => {
+            if (pre.closest('.code-block-wrapper') || pre.classList.contains('mermaid')) return;
+            const code = pre.querySelector('code');
+            if (!code) return;
+
+            let lang = 'code';
+            const classes = (code.className || '').split(/\s+/);
+            for (const cls of classes) {
+                if (cls.startsWith('language-')) {
+                    lang = cls.replace('language-', '');
+                    break;
+                }
+            }
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'code-block-wrapper';
+            pre.parentNode.insertBefore(wrapper, pre);
+
+            const header = document.createElement('div');
+            header.className = 'code-block-header';
+            header.innerHTML = `
+                <span class="code-lang-badge">${lang}</span>
+                <button type="button" class="code-copy-btn" aria-label="Copy code">
+                    <i class="far fa-copy" aria-hidden="true"></i> Copy
+                </button>
+            `;
+
+            wrapper.appendChild(header);
+            wrapper.appendChild(pre);
+
+            const copyBtn = header.querySelector('.code-copy-btn');
+            copyBtn.addEventListener('click', (e) => {
+                const text = code.innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    if (typeof window.triggerCanvasUIButtonShatter === 'function') {
+                        window.triggerCanvasUIButtonShatter(e.clientX, e.clientY);
+                    }
+                    copyBtn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> Copied!';
+                    copyBtn.classList.add('copied');
+                    setTimeout(() => {
+                        copyBtn.innerHTML = '<i class="far fa-copy" aria-hidden="true"></i> Copy';
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    };
+
+    // ================================
+    // 15. Ebooks Post Interactive Transliteration Sandbox
+    // ================================
+    const initTranslitWidget = () => {
+        const widget = document.getElementById('translit-demo-widget');
+        if (!widget) return;
+
+        const input = document.getElementById('translit-input');
+        const runBtn = document.getElementById('translit-run-btn');
+        const bnEl = document.getElementById('translit-bn');
+        const countEl = document.getElementById('translit-count');
+        const chipsContainer = document.getElementById('translit-chips');
+
+        const DICT = {
+            'feluda': { bn: 'ফেলুদা', variants: ['feluda', 'feloo-da', 'pheluda', 'felu-da', 'feludaa', 'phelu-da'] },
+            'byomkesh': { bn: 'ব্যোমকেশ', variants: ['byomkesh', 'bomkesh', 'byomkes', 'byomkesha', 'bomkesha', 'byomkeshe'] },
+            'satyajit': { bn: 'সত্যজিৎ', variants: ['satyajit', 'sottyojit', 'satyajit roy', 'satyajita', 'satyajeet'] },
+            'vidyasagar': { bn: 'বিদ্যাসাগর', variants: ['vidyasagar', 'biddasagar', 'bidyasagar', 'vidyasagara', 'iswar chandra vidyasagar'] },
+            'humayun': { bn: 'হুমায়ূন', variants: ['humayun', 'humayan', 'humayun ahmed', 'humayoon', 'humaiyun'] },
+            'shonku': { bn: 'শঙ্কু', variants: ['shonku', 'sanku', 'prof shonku', 'shanku', 'sonku'] },
+            'kakababu': { bn: 'কাকাবাবু', variants: ['kakababu', 'kaka-babu', 'kakababoo', 'kaka babu'] },
+            'banerjee': { bn: 'বন্দ্যোপাধ্যায়', variants: ['banerjee', 'bandyopadhyay', 'bandopadhyay', 'bonerjea'] }
+        };
+
+        const update = () => {
+            const raw = (input.value || '').trim().toLowerCase();
+            const matched = DICT[raw] || {
+                bn: 'স্বয়ংক্রিয় অনুলিপি (' + raw + ')',
+                variants: [raw, raw + 'a', raw + 'o', raw.replace(/ee/g, 'i'), raw.replace(/oo/g, 'u'), raw + '-da']
+            };
+
+            bnEl.textContent = matched.bn;
+            countEl.textContent = matched.variants.length;
+            chipsContainer.innerHTML = '';
+            matched.variants.forEach(v => {
+                const chip = document.createElement('span');
+                chip.className = 'widget-chip';
+                chip.textContent = v;
+                chipsContainer.appendChild(chip);
+            });
+        };
+
+        if (runBtn) {
+            runBtn.addEventListener('click', (e) => {
+                if (typeof window.triggerCanvasUIButtonShatter === 'function') {
+                    window.triggerCanvasUIButtonShatter(e.clientX, e.clientY);
+                }
+                update();
+            });
+        }
+        if (input) {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    if (runBtn) runBtn.click();
+                }
+            });
+            update();
+        }
+    };
+
+    // ================================
+    // 16. Ebooks Post Mini Theme Canvas Simulator
+    // ================================
+    const initThemeCanvasWidget = () => {
+        const c = document.getElementById('ebooks-post-canvas');
+        if (!c) return;
+
+        const ctx = c.getContext('2d');
+        if (!ctx) return;
+
+        const THEME_PALETTES = {
+            dark:      { n1: '#00ccff', n2: '#8855ff', edge: 'rgba(0, 204, 255, 0.22)', bg: '#050518' },
+            light:     { n1: '#0055cc', n2: '#7722cc', edge: 'rgba(0, 85, 204, 0.22)',  bg: '#f8f9fa' },
+            batman:    { n1: '#ffe919', n2: '#ff3333', edge: 'rgba(255, 233, 25, 0.25)', bg: '#0b0b0b' },
+            cyberpunk: { n1: '#ff0080', n2: '#00ffcc', edge: 'rgba(255, 0, 128, 0.25)', bg: '#090014' },
+            ocean:     { n1: '#00e5b0', n2: '#0099ff', edge: 'rgba(0, 229, 176, 0.25)', bg: '#001322' }
+        };
+
+        let currentPal = THEME_PALETTES.dark;
+
+        const count = 35;
+        const pts = [];
+        for (let i = 0; i < count; i++) {
+            pts.push({
+                x: Math.random() * c.width,
+                y: Math.random() * c.height,
+                vx: (Math.random() - 0.5) * 0.9,
+                vy: (Math.random() - 0.5) * 0.9,
+                r: Math.random() * 2.5 + 1.5,
+                colorType: Math.random() > 0.5 ? 'n1' : 'n2'
+            });
+        }
+
+        const render = () => {
+            ctx.fillStyle = currentPal.bg;
+            ctx.fillRect(0, 0, c.width, c.height);
+
+            for (let i = 0; i < pts.length; i++) {
+                for (let j = i + 1; j < pts.length; j++) {
+                    const dx = pts[i].x - pts[j].x;
+                    const dy = pts[i].y - pts[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 85) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = currentPal.edge;
+                        ctx.lineWidth = 1 - (dist / 85);
+                        ctx.moveTo(pts[i].x, pts[i].y);
+                        ctx.lineTo(pts[j].x, pts[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            pts.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > c.width) p.vx *= -1;
+                if (p.y < 0 || p.y > c.height) p.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = currentPal[p.colorType];
+                ctx.fill();
+            });
+
+            requestAnimationFrame(render);
+        };
+
+        render();
+
+        const btnContainer = document.getElementById('theme-demo-btns');
+        if (btnContainer) {
+            btnContainer.addEventListener('click', (e) => {
+                const btn = e.target.closest('.theme-demo-chip');
+                if (!btn) return;
+                btnContainer.querySelectorAll('.theme-demo-chip').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const t = btn.dataset.themeVal;
+                if (THEME_PALETTES[t]) {
+                    currentPal = THEME_PALETTES[t];
+                    if (typeof window.triggerCanvasUIButtonShatter === 'function') {
+                        window.triggerCanvasUIButtonShatter(e.clientX, e.clientY);
+                    }
+                }
+            });
+        }
+    };
+
+    // ================================
     // Initialize All
     // ================================
     document.addEventListener('DOMContentLoaded', () => {
@@ -709,6 +920,9 @@
         initShareButtons();
         initLayoutToggle();
         initLazyImages();
+        initCodeBlockCopy();
+        initTranslitWidget();
+        initThemeCanvasWidget();
     });
 
 })();

@@ -180,15 +180,18 @@
     <!-- Posts Section -->
     <section id="posts" class="posts-section">
         <div class="container">
-            <p class="section-label reveal">03 / Posts</p>
-            <h2 class="section-heading reveal">All Posts</h2>
-            <p class="section-subtitle reveal">Deep dives into AI/ML projects, tutorials, and insights</p>
+            <div class="section-header reveal">
+                <span class="section-label">03 / Posts</span>
+                <h2 class="section-heading">All Posts</h2>
+                <p class="section-subtitle">Deep dives into AI/ML projects, tutorials, and insights</p>
+            </div>
 
             <!-- Search Bar -->
             <div class="search-wrap reveal">
                 <div class="search-bar">
                     <i class="fas fa-search" aria-hidden="true"></i>
-                    <input type="text" id="post-search" placeholder="Search posts…" autocomplete="off" aria-label="Search posts">
+                    <input type="text" id="post-search" placeholder="Search posts, topics, or tags…" autocomplete="off" aria-label="Search posts">
+                    <span class="search-kbd" aria-hidden="true"><kbd>/</kbd></span>
                     <button type="button" id="search-clear" class="search-clear" aria-label="Clear search">
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
@@ -209,6 +212,24 @@
                 {% assign category = post.categories | first %}
                 {% assign cats_str = post.categories | join: ',' %}
                 {% assign tags_str = post.tags | join: ',' %}
+                {% assign teaser_img = post.header.teaser %}
+                {% if teaser_img == nil or teaser_img == "" or teaser_img == "/assets/images/icon.webp" %}
+                  {% if post.url contains "Ebooks" %}
+                    {% assign teaser_img = "/assets/images/posts/ebooks.png" %}
+                  {% elsif post.url contains "SnapGrade" %}
+                    {% assign teaser_img = "/assets/images/posts/snapgrade.png" %}
+                  {% elsif post.url contains "Repolect" %}
+                    {% assign teaser_img = "/assets/images/posts/repolect.png" %}
+                  {% elsif post.url contains "Docling" %}
+                    {% assign teaser_img = "/assets/images/posts/hf_docling.png" %}
+                  {% elsif post.url contains "proemogi" %}
+                    {% assign teaser_img = "/assets/images/posts/proemogi.png" %}
+                  {% elsif post.url contains "proGENTRL" %}
+                    {% assign teaser_img = "/assets/images/posts/progentrl.png" %}
+                  {% else %}
+                    {% assign teaser_img = "/assets/images/posts/repolect.png" %}
+                  {% endif %}
+                {% endif %}
                     <article class="post-card holo-card reveal {% if forloop.first %}holo-gold{% endif %}"
                         data-category="{{ category }}"
                         data-cats="{{ cats_str }}"
@@ -216,29 +237,38 @@
                         data-title="{{ post.title | downcase }}"
                         data-excerpt="{{ post.excerpt | strip_html | downcase | truncate: 300 }}">
                         <a href="{{ post.url | relative_url }}" class="post-card-link">
-                            <div class="post-card-header">
-                                <time class="post-date" datetime="{{ post.date | date_to_xmlschema }}">
-                                    <i class="fas fa-calendar-alt" aria-hidden="true"></i> {{ post.date | date: "%B %d, %Y" }}
-                                </time>
-                                <span class="post-read-time">
-                                    <i class="fas fa-clock" aria-hidden="true"></i> {{ read_time }} min read
-                                </span>
+                            <div class="post-card-banner">
+                                <img src="{{ teaser_img | relative_url }}" alt="{{ post.title }}" loading="lazy" class="post-card-img">
+                                <div class="post-card-banner-overlay"></div>
+                                {% if category %}
+                                <span class="post-card-category">{{ category }}</span>
+                                {% endif %}
                             </div>
-                            <h3 class="post-card-title">{{ post.title }}</h3>
-                            {% if post.tags.size > 0 %}
-                            <div class="post-tags">
-                                {% for tag in post.tags limit:3 %}
-                                <span class="post-tag">{{ tag }}</span>
-                                {% endfor %}
+                            <div class="post-card-body">
+                                <div class="post-card-meta">
+                                    <time class="post-date" datetime="{{ post.date | date_to_xmlschema }}">
+                                        <i class="far fa-calendar-alt" aria-hidden="true"></i> {{ post.date | date: "%b %d, %Y" }}
+                                    </time>
+                                    <span class="meta-dot">·</span>
+                                    <span class="post-read-time">
+                                        <i class="far fa-clock" aria-hidden="true"></i> {{ read_time }} min read
+                                    </span>
+                                </div>
+                                <h3 class="post-card-title">{{ post.title }}</h3>
+                                <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncate: 135 }}</p>
+                                <div class="post-card-footer">
+                                    {% if post.tags.size > 0 %}
+                                    <div class="post-tags">
+                                        {% for tag in post.tags limit:2 %}
+                                        <span class="post-tag">#{{ tag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    <span class="read-more-link">
+                                        Read <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                                    </span>
+                                </div>
                             </div>
-                            {% endif %}
-                            <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncate: 180 }}</p>
-                            {% if post.categories.size > 0 %}
-                            <div class="post-card-footer">
-                                <span class="category-badge">{{ category }}</span>
-                                <span class="read-more-arrow"><i class="fas fa-arrow-right" aria-hidden="true"></i></span>
-                            </div>
-                            {% endif %}
                         </a>
                     </article>
                     {% endfor %}
@@ -310,9 +340,11 @@
     <!-- Categories Section -->
     <section id="categories" class="taxonomy-section">
         <div class="taxonomy-inner">
-            <p class="section-label reveal">04 / Browse</p>
-            <h2 class="section-heading reveal">Categories</h2>
-            <p class="section-subtitle reveal">Filter posts by topic area</p>
+            <div class="section-header reveal">
+                <span class="section-label">04 / Browse</span>
+                <h2 class="section-heading">Categories</h2>
+                <p class="section-subtitle">Filter posts by topic area</p>
+            </div>
             <div class="taxonomy-grid reveal" id="categories-grid"></div>
         </div>
     </section>
@@ -320,9 +352,11 @@
     <!-- Tags Section -->
     <section id="tags" class="taxonomy-section taxonomy-section--notop">
         <div class="taxonomy-inner">
-            <p class="section-label reveal">05 / Tags</p>
-            <h2 class="section-heading reveal">Tags</h2>
-            <p class="section-subtitle reveal">Explore by keyword</p>
+            <div class="section-header reveal">
+                <span class="section-label">05 / Tags</span>
+                <h2 class="section-heading">Tags</h2>
+                <p class="section-subtitle">Explore by keyword</p>
+            </div>
             <div class="taxonomy-grid reveal" id="tags-grid"></div>
         </div>
     </section>

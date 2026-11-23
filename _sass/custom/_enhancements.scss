@@ -90,34 +90,38 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 36px;
 }
 
 .filter-pill {
-    padding: 8px 20px;
+    padding: 7px 18px;
     font-family: $font-code;
-    font-size: 0.78em;
+    font-size: 0.76rem;
     font-weight: 500;
     border: 1px solid var(--border);
-    border-radius: 30px;
+    border-radius: 999px;
     background: var(--surface);
     color: var(--text-muted);
     cursor: pointer;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     transition: all var(--t) var(--ease);
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
 
     &:hover {
         background: var(--surface-2);
         border-color: var(--accent);
         color: var(--accent);
+        transform: translateY(-2px);
     }
 
     &.active {
         background: var(--accent);
         border-color: var(--accent);
-        color: var(--bg);
+        color: var(--bg) !important;
         box-shadow: var(--glow);
+        transform: translateY(-2px);
     }
 }
 
@@ -197,15 +201,17 @@
     align-items: center;
     gap: 12px;
     padding: 12px 20px;
-    border-radius: 50px;
+    border-radius: 999px;
     background: var(--surface) !important;
     border: 1px solid var(--border) !important;
-    box-shadow: none !important;
-    transition: border-color var(--t), box-shadow var(--t);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
+    transition: all var(--t) var(--ease);
 
     &:focus-within {
         border-color: var(--accent) !important;
-        box-shadow: var(--glow) !important;
+        box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.18), var(--glow) !important;
     }
 
     i {
@@ -224,7 +230,7 @@
 
         &::placeholder {
             color: var(--text-muted);
-            opacity: 0.85;
+            opacity: 0.75;
         }
     }
 }

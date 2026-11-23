@@ -195,3 +195,251 @@
   z-index: 9998;
   pointer-events: none;
 }
+
+/* ── Modern Code Block Wrapper & Tactile Copy Header ── */
+.code-block-wrapper {
+  position: relative;
+  margin: 1.8em 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+  pre {
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+}
+
+.code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  font-family: $font-code;
+  font-size: 0.72rem;
+}
+
+.code-lang-badge {
+  text-transform: uppercase;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.code-copy-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 9px;
+  color: var(--text-muted);
+  font-family: $font-code;
+  font-size: 0.72rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all var(--t) var(--ease);
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(var(--accent-rgb), 0.08);
+  }
+
+  &.copied {
+    border-color: #34c759;
+    color: #34c759;
+  }
+}
+
+/* ── TOC Holographic Card Treatment ── */
+.toc.holo-card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* ── Interactive Blog Post Widgets ── */
+.interactive-widget {
+  margin: 2.2em 0;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.widget-header {
+  padding: 14px 20px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.widget-badge {
+  font-family: $font-code;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(var(--accent-rgb), 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.widget-title {
+  font-family: $font-heading;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--heading-color);
+}
+
+.widget-body {
+  padding: 22px;
+}
+
+.widget-label {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.widget-input-wrap {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+
+  input {
+    flex: 1;
+    min-width: 220px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-family: $font-body;
+    font-size: 0.95rem;
+
+    &:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: var(--glow);
+    }
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+}
+
+.widget-results {
+  background: var(--surface-2);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid var(--border);
+}
+
+.widget-stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: $font-code;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  strong {
+    color: var(--accent);
+  }
+}
+
+.widget-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.widget-chip {
+  font-family: $font-code;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+/* Theme canvas demo widget */
+.theme-demo-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.theme-demo-chip {
+  padding: 6px 14px;
+  font-family: $font-code;
+  font-size: 0.76rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--t) var(--ease);
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  &.active {
+    background: var(--accent);
+    color: var(--bg) !important;
+    border-color: var(--accent);
+    box-shadow: var(--glow);
+  }
+}
+
+.theme-demo-canvas-wrap {
+  width: 100%;
+  height: 220px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #050518;
+  border: 1px solid var(--border);
+  position: relative;
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
+.widget-caption {
+  font-family: $font-code;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+  margin-bottom: 0;
+  text-align: center;
+}

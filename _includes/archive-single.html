@@ -1,7 +1,21 @@
-{% if post.header.teaser %}
+{% if post.header.teaser and post.header.teaser != "/assets/images/icon.webp" %}
   {% capture teaser %}{{ post.header.teaser }}{% endcapture %}
 {% else %}
-  {% assign teaser = site.teaser %}
+  {% if post.url contains "Ebooks" %}
+    {% assign teaser = "/assets/images/posts/ebooks.png" %}
+  {% elsif post.url contains "SnapGrade" %}
+    {% assign teaser = "/assets/images/posts/snapgrade.png" %}
+  {% elsif post.url contains "Repolect" %}
+    {% assign teaser = "/assets/images/posts/repolect.png" %}
+  {% elsif post.url contains "Docling" %}
+    {% assign teaser = "/assets/images/posts/hf_docling.png" %}
+  {% elsif post.url contains "proemogi" %}
+    {% assign teaser = "/assets/images/posts/proemogi.png" %}
+  {% elsif post.url contains "proGENTRL" %}
+    {% assign teaser = "/assets/images/posts/progentrl.png" %}
+  {% else %}
+    {% assign teaser = "/assets/images/posts/repolect.png" %}
+  {% endif %}
 {% endif %}
 
 {% if post.id %}
