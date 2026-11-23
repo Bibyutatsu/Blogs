@@ -265,9 +265,21 @@
     };
 
     // ================================
-    // 8. Stat Counters
+    // 8. Dynamic Experience & Stat Counters
     // ================================
+    const updateDynamicExperience = () => {
+        const expEl = document.getElementById('stat-exp');
+        if (!expEl) return;
+        const start = new Date(2019, 5, 1); // June 2019
+        const now = new Date();
+        const diffYears = Math.max(0, (now - start) / (1000 * 60 * 60 * 24 * 365.25));
+        expEl.dataset.target = diffYears.toFixed(1);
+        expEl.dataset.suffix = '+';
+        expEl.textContent = diffYears.toFixed(1) + '+';
+    };
+
     const initCounters = () => {
+        updateDynamicExperience();
         const nums = document.querySelectorAll('.stat-num[data-target]');
         if (!nums.length) return;
 
@@ -275,16 +287,24 @@
             entries.forEach(e => {
                 if (!e.isIntersecting) return;
                 const el = e.target;
-                const target = +el.dataset.target;
-                const start = Date.now();
+                const target = parseFloat(el.dataset.target);
+                const isFloat = target % 1 !== 0;
+                const suffix = el.dataset.suffix || '';
+                const start = performance.now();
                 const dur = 1800;
 
-                (function tick() {
-                    const p = Math.min((Date.now() - start) / dur, 1);
+                (function tick(now) {
+                    const p = Math.min((now - start) / dur, 1);
                     const ease = 1 - Math.pow(1 - p, 3);
-                    el.textContent = Math.round(ease * target);
-                    if (p < 1) requestAnimationFrame(tick);
-                })();
+                    el.textContent = isFloat
+                        ? (target * ease).toFixed(1) + suffix
+                        : Math.floor(target * ease) + suffix;
+                    if (p < 1) {
+                        requestAnimationFrame(tick);
+                    } else {
+                        el.textContent = (isFloat ? target.toFixed(1) : target) + suffix;
+                    }
+                })(start);
 
                 obs.unobserve(el);
             });
@@ -294,10 +314,36 @@
     };
 
     // ================================
-    // 9. Sticky Nav + Active Section
+    // 9. Sticky Nav, Smooth Scroll & Mobile Menu
     // ================================
+    const initMobileNav = () => {
+        const menuToggle = document.getElementById('menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        if (!menuToggle || !navLinks) return;
+
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.body.classList.toggle('menu-open');
+            navLinks.classList.toggle('open');
+        });
+
+        navLinks.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', () => {
+                document.body.classList.remove('menu-open');
+                navLinks.classList.remove('open');
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!menuToggle.contains(e.target) && !navLinks.contains(e.target)) {
+                document.body.classList.remove('menu-open');
+                navLinks.classList.remove('open');
+            }
+        });
+    };
+
     const initMastheadScroll = () => {
-        const nav = document.getElementById('masthead') || document.querySelector('.masthead');
+        const nav = document.getElementById('nav') || document.getElementById('masthead') || document.querySelector('.masthead');
         if (!nav) return;
 
         const sections = ['posts', 'categories', 'tags'].map(id => ({
@@ -321,9 +367,11 @@
         // Smooth scroll for nav links
         document.querySelectorAll('.nav-links a[data-section]').forEach(a => {
             a.addEventListener('click', e => {
-                e.preventDefault();
                 const target = document.getElementById(a.dataset.section);
-                if (target) window.scrollTo({ top: target.offsetTop - 70, behavior: 'smooth' });
+                if (target) {
+                    e.preventDefault();
+                    window.scrollTo({ top: target.offsetTop - 70, behavior: 'smooth' });
+                }
             });
         });
 
@@ -338,20 +386,64 @@
     };
 
     // ================================
-    // 10. 3D Card Tilt
+    // 10. Holographic Foil & 3D Tilt (Pokemon Cards CSS style)
     // ================================
     let _tiltEnabled = true;
 
-    const initCardTilt = () => {
-        document.querySelectorAll('.post-card').forEach(card => {
-            card.addEventListener('mousemove', e => {
+    const initHoloCards = () => {
+        if (window.matchMedia && window.matchMedia('(hover: none)').matches) return;
+
+        const cards = document.querySelectorAll('.holo-card:not([data-holo-active])');
+        cards.forEach(card => {
+            card.setAttribute('data-holo-active', 'true');
+            let rafId = null;
+
+            function onMouseMove(e) {
                 if (!_tiltEnabled) return;
-                const r = card.getBoundingClientRect();
-                const x = (e.clientX - r.left) / r.width - 0.5;
-                const y = (e.clientY - r.top) / r.height - 0.5;
-                card.style.transform = `perspective(700px) rotateY(${x * 9}deg) rotateX(${-y * 9}deg) translateZ(6px)`;
-            });
-            card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+                const rect = card.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width;
+                const y = (e.clientY - rect.top) / rect.height;
+
+                const px = (x * 100).toFixed(1);
+                const py = (y * 100).toFixed(1);
+                const dx = x - 0.5;
+                const dy = y - 0.5;
+
+                const maxDeg = 11;
+                const rotX = (dy * -maxDeg).toFixed(2);
+                const rotY = (dx * maxDeg).toFixed(2);
+
+                const angle = (Math.atan2(dy, dx) * (180 / Math.PI) + 90).toFixed(1);
+                const foilX = (50 + dx * 60).toFixed(1);
+                const foilY = (50 + dy * 60).toFixed(1);
+
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(() => {
+                    card.style.setProperty('--pointer-x', `${px}%`);
+                    card.style.setProperty('--pointer-y', `${py}%`);
+                    card.style.setProperty('--foil-x', `${foilX}%`);
+                    card.style.setProperty('--foil-y', `${foilY}%`);
+                    card.style.setProperty('--angle', `${angle}deg`);
+                    card.style.setProperty('--holo-opacity', '1');
+                    card.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-6px) translateZ(8px)`;
+                });
+            }
+
+            function onMouseEnter() {
+                if (!_tiltEnabled) return;
+                card.style.transition = 'transform 0.12s ease-out, border-color 0.3s ease, box-shadow 0.3s ease';
+            }
+
+            function onMouseLeave() {
+                if (rafId) cancelAnimationFrame(rafId);
+                card.style.transition = 'transform 0.65s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.38s ease, box-shadow 0.38s ease';
+                card.style.setProperty('--holo-opacity', '0');
+                card.style.transform = '';
+            }
+
+            card.addEventListener('mouseenter', onMouseEnter);
+            card.addEventListener('mousemove', onMouseMove);
+            card.addEventListener('mouseleave', onMouseLeave);
         });
     };
 
@@ -537,7 +629,10 @@
             () => { _tiltEnabled = true; },
             () => {
                 _tiltEnabled = false;
-                document.querySelectorAll('.post-card').forEach(c => { c.style.transform = ''; });
+                document.querySelectorAll('.holo-card, .post-card').forEach(c => {
+                    c.style.transform = '';
+                    c.style.setProperty('--holo-opacity', '0');
+                });
             }
         );
 
@@ -607,8 +702,9 @@
         buildTaxonomy();
         initPostSearch();
         initCounters();
+        initMobileNav();
         initMastheadScroll();
-        initCardTilt();
+        initHoloCards();
         initTweaks();
         initShareButtons();
         initLayoutToggle();

@@ -52,7 +52,13 @@
     pop.addEventListener('click', function (e) { e.stopPropagation(); });
 
     opts.forEach(function (opt) {
-        opt.addEventListener('click', function () {
+        opt.addEventListener('click', function (e) {
+            var r = opt.getBoundingClientRect();
+            var ox = r.left + r.width / 2;
+            var oy = r.top + r.height / 2;
+            if (typeof window.triggerCanvasUIThemeEffect === 'function') {
+                window.triggerCanvasUIThemeEffect(opt.dataset.theme, ox, oy);
+            }
             applyTheme(opt.dataset.theme, true);
             pop.classList.remove('open');
             btn.setAttribute('aria-expanded', 'false');

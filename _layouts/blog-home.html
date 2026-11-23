@@ -32,28 +32,32 @@
 <body class="layout--blog-home">
     {% include reactive-ui.html %}
 
-    <!-- Nav -->
-    <nav class="masthead" id="masthead">
+    <!-- Nav (Matches portfolio https://bibyutatsu.github.io/) -->
+    <nav id="nav">
         <div class="nav-inner">
-            <a href="#hero" class="site-title-link">
-                {{ site.title | default: "Bibhash's Dev Blog" }}
-                <span class="site-title-sub">// dev·log</span>
-            </a>
+            <a href="{{ '/' | relative_url }}" class="nav-logo">BM<span class="dot">.</span></a>
+
             <ul class="nav-links">
-                <li><a href="#posts" data-section="posts">posts</a></li>
-                <li><a href="#categories" data-section="categories">categories</a></li>
-                <li><a href="#tags" data-section="tags">tags</a></li>
-                <li><a href="https://bibyutatsu.github.io/" target="_blank" rel="noopener noreferrer">portfolio ↗</a></li>
-                <li><a href="https://bibyutatsu.github.io/ebooks/" target="_blank" rel="noopener noreferrer">book store ↗</a></li>
+                <li><a href="https://bibyutatsu.github.io/#projects" target="_blank" rel="noopener">Showcase</a></li>
+                <li><a href="#posts" data-section="posts">Posts</a></li>
+                <li><a href="#categories" data-section="categories">Categories</a></li>
+                <li><a href="#tags" data-section="tags">Tags</a></li>
+                <li><a href="https://bibyutatsu.github.io/ebooks/" target="_blank" rel="noopener">Books</a></li>
+                <li><a href="https://bibyutatsu.github.io/#about" target="_blank" rel="noopener">About</a></li>
+                <li><a href="https://bibyutatsu.github.io/#contact" target="_blank" rel="noopener">Contact</a></li>
             </ul>
+
             <div class="nav-right">
                 {% include theme-toggle.html %}
-                <button class="tweaks-btn" id="tweaks-btn" aria-label="Open tweaks panel" aria-expanded="false">
+                <button class="tweaks-btn" id="tweaks-btn" aria-label="Open tweaks panel" aria-expanded="false" title="Tweaks">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <circle cx="12" cy="12" r="3"/>
                         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
                     </svg>
                     <span class="tweaks-label">Tweaks</span>
+                </button>
+                <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
+                    <span></span><span></span><span></span>
                 </button>
             </div>
         </div>
@@ -121,7 +125,7 @@
     <section id="hero">
         <canvas id="hero-canvas"></canvas>
 
-        <div class="hero-container">
+        <div class="hero-container holo-card">
             <div class="hero-image">
                 <img src="{{ site.author.avatar }}" alt="{{ site.author.name }}" class="profile-img" id="profile-img">
             </div>
@@ -167,7 +171,7 @@
                 <div class="stat-label">Tags Covered</div>
             </div>
             <div class="stat-item">
-                <div class="stat-num">6.9+</div>
+                <div class="stat-num" id="stat-exp" data-target="7.5">0</div>
                 <div class="stat-label">Years Exp.</div>
             </div>
         </div>
@@ -205,7 +209,7 @@
                 {% assign category = post.categories | first %}
                 {% assign cats_str = post.categories | join: ',' %}
                 {% assign tags_str = post.tags | join: ',' %}
-                    <article class="post-card"
+                    <article class="post-card holo-card reveal {% if forloop.first %}holo-gold{% endif %}"
                         data-category="{{ category }}"
                         data-cats="{{ cats_str }}"
                         data-tags="{{ tags_str | downcase }}"
@@ -346,6 +350,8 @@
     {% include scripts.html %}
     <script src="{{ '/assets/js/theme.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/cursor.js' | relative_url }}"></script>
+    <script src="{{ '/assets/js/canvas-ui.js' | relative_url }}"></script>
+    <script src="{{ '/assets/js/pretext.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/particles.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/enhancements.js' | relative_url }}"></script>
 </body>
