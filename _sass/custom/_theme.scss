@@ -141,8 +141,8 @@ body.c-click #cursor-ring { width: 24px; height: 24px; opacity: 1; }
     z-index: 1000;
 }
 
-// Inside the blog-home nav the toggle is not fixed
-nav.masthead .theme-wrap {
+// Inside the unified nav the toggle is not fixed
+#nav .theme-wrap, nav.masthead .theme-wrap {
     position: relative;
     top: auto;
     right: auto;
@@ -238,6 +238,12 @@ nav.masthead .theme-wrap {
 
 @media (max-width: 768px) {
     .theme-wrap { top: 12px; right: 12px; }
+    #nav .theme-wrap, nav.masthead .theme-wrap {
+        position: relative;
+        top: auto;
+        right: auto;
+        z-index: auto;
+    }
     .theme-icon-btn .theme-label { display: none; }
 }
 

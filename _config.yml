@@ -117,7 +117,7 @@ sass:
 
 # Outputting
 permalink: /:year/:month/:title/
-paginate: 5
+paginate: 6
 paginate_path: /page:num/
 timezone: Asia/Kolkata
 

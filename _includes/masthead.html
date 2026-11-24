@@ -15,11 +15,11 @@
     <div class="nav-right">
       {% include theme-toggle.html %}
       {% if site.search == true %}
-      <a href="{{ '/search/' | relative_url }}" class="search-btn-nav" aria-label="Search" title="Search">
+      <button class="search__toggle search-btn-nav" type="button" aria-label="Search" title="Search">
         <i class="fas fa-search" aria-hidden="true"></i>
-      </a>
+      </button>
       {% endif %}
-      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>

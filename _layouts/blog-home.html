@@ -49,6 +49,11 @@
 
             <div class="nav-right">
                 {% include theme-toggle.html %}
+                {% if site.search == true %}
+                <button class="search__toggle search-btn-nav" type="button" aria-label="Search" title="Search">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                </button>
+                {% endif %}
                 <button class="tweaks-btn" id="tweaks-btn" aria-label="Open tweaks panel" aria-expanded="false" title="Tweaks">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <circle cx="12" cy="12" r="3"/>
@@ -56,7 +61,7 @@
                     </svg>
                     <span class="tweaks-label">Tweaks</span>
                 </button>
-                <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
+                <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
                     <span></span><span></span><span></span>
                 </button>
             </div>
@@ -74,19 +79,19 @@
             <div class="twk-row">
                 <div class="twk-chips" id="palette-chips" role="radiogroup" aria-label="Accent palette">
                     <button class="twk-chip" data-on="1" data-palette="default" role="radio" aria-checked="true"
-                        title="Cyan / Purple" style="background:#00ccff">
+                        aria-label="Cyan and purple accent palette" title="Cyan / Purple" style="background:#00ccff">
                         <div class="twk-chip-stripe" style="background:#8855ff"></div>
                     </button>
                     <button class="twk-chip" data-on="0" data-palette="coral" role="radio" aria-checked="false"
-                        title="Coral / Gold" style="background:#ff6b4a">
+                        aria-label="Coral and gold accent palette" title="Coral / Gold" style="background:#ff6b4a">
                         <div class="twk-chip-stripe" style="background:#ffb830"></div>
                     </button>
                     <button class="twk-chip" data-on="0" data-palette="mint" role="radio" aria-checked="false"
-                        title="Mint / Blue" style="background:#00e5b0">
+                        aria-label="Mint and blue accent palette" title="Mint / Blue" style="background:#00e5b0">
                         <div class="twk-chip-stripe" style="background:#0099ff"></div>
                     </button>
                     <button class="twk-chip" data-on="0" data-palette="rose" role="radio" aria-checked="false"
-                        title="Rose / Orange" style="background:#ff4d8d">
+                        aria-label="Rose and orange accent palette" title="Rose / Orange" style="background:#ff4d8d">
                         <div class="twk-chip-stripe" style="background:#ff8c42"></div>
                     </button>
                 </div>
@@ -121,6 +126,7 @@
         </div>
     </div>
 
+    <div class="initial-content">
     <!-- Hero Section with Particle Animation -->
     <section id="hero">
         <canvas id="hero-canvas"></canvas>
@@ -293,7 +299,7 @@
                 <ul class="pagination">
                     {% if paginator.previous_page %}
                     <li class="pagination-item">
-                        <a href="{{ paginator.previous_page_path | relative_url }}" class="pagination-link prev">
+                        <a href="{{ paginator.previous_page_path | relative_url }}#posts" class="pagination-link prev">
                             <i class="fas fa-chevron-left"></i> Prev
                         </a>
                     </li>
@@ -310,9 +316,9 @@
                         {% if page == paginator.page %}
                         <span class="pagination-link active">{{ page }}</span>
                         {% elsif page == 1 %}
-                        <a href="{{ '/' | relative_url }}" class="pagination-link">{{ page }}</a>
+                        <a href="{{ '/' | relative_url }}#posts" class="pagination-link">{{ page }}</a>
                         {% else %}
-                        <a href="{{ site.paginate_path | relative_url | replace: ':num', page }}"
+                        <a href="{{ site.paginate_path | relative_url | replace: ':num', page }}#posts"
                             class="pagination-link">{{ page }}</a>
                         {% endif %}
                     </li>
@@ -320,7 +326,7 @@
 
                     {% if paginator.next_page %}
                     <li class="pagination-item">
-                        <a href="{{ paginator.next_page_path | relative_url }}" class="pagination-link next">
+                        <a href="{{ paginator.next_page_path | relative_url }}#posts" class="pagination-link next">
                             Next <i class="fas fa-chevron-right"></i>
                         </a>
                     </li>
@@ -380,6 +386,13 @@
 
     <!-- Back to Top Button -->
     {% include back-to-top.html %}
+    </div>
+
+    {% if site.search == true %}
+    <div class="search-content">
+        {% include_cached search/search_form.html %}
+    </div>
+    {% endif %}
 
     {% include scripts.html %}
     <script src="{{ '/assets/js/theme.js' | relative_url }}"></script>

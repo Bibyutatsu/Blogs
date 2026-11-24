@@ -1118,3 +1118,33 @@ body.menu-open .menu-toggle span:nth-child(3) { transform: rotate(-45deg) transl
         box-shadow: var(--glow2);
     }
 }
+
+// ─── SEARCH OVERLAY CLEARANCE & BUTTON ────────────────────
+.search-btn-nav {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: color var(--t), background var(--t);
+
+    &:hover {
+        color: var(--heading-color);
+        background: var(--nav-blur);
+    }
+}
+
+.search-content {
+    position: relative;
+    z-index: 600;
+
+    &.is--visible {
+        padding-top: 85px;
+    }
+}
+

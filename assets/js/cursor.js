@@ -5,6 +5,7 @@
     'use strict';
 
     if (window.matchMedia('(hover: none)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     var dot  = document.getElementById('cursor-dot');
     var ring = document.getElementById('cursor-ring');
@@ -53,6 +54,7 @@
 (function () {
     'use strict';
     if (window.matchMedia('(hover: none)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     function apply(selector) {
         document.querySelectorAll(selector).forEach(function (el) {

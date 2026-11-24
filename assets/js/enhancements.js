@@ -331,16 +331,23 @@
         const navLinks = document.querySelector('.nav-links');
         if (!menuToggle || !navLinks) return;
 
+        const updateAria = () => {
+            const isOpen = navLinks.classList.contains('open');
+            menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        };
+
         menuToggle.addEventListener('click', (e) => {
             e.stopPropagation();
             document.body.classList.toggle('menu-open');
             navLinks.classList.toggle('open');
+            updateAria();
         });
 
         navLinks.querySelectorAll('a').forEach(a => {
             a.addEventListener('click', () => {
                 document.body.classList.remove('menu-open');
                 navLinks.classList.remove('open');
+                updateAria();
             });
         });
 
@@ -348,6 +355,7 @@
             if (!menuToggle.contains(e.target) && !navLinks.contains(e.target)) {
                 document.body.classList.remove('menu-open');
                 navLinks.classList.remove('open');
+                updateAria();
             }
         });
     };
@@ -738,7 +746,7 @@
             const copyBtn = header.querySelector('.code-copy-btn');
             copyBtn.addEventListener('click', (e) => {
                 const text = code.innerText;
-                navigator.clipboard.writeText(text).then(() => {
+                const markCopied = () => {
                     if (typeof window.triggerCanvasUIButtonShatter === 'function') {
                         window.triggerCanvasUIButtonShatter(e.clientX, e.clientY);
                     }
@@ -748,7 +756,29 @@
                         copyBtn.innerHTML = '<i class="far fa-copy" aria-hidden="true"></i> Copy';
                         copyBtn.classList.remove('copied');
                     }, 2000);
-                });
+                };
+
+                const fallbackCopy = (str) => {
+                    const ta = document.createElement('textarea');
+                    ta.value = str;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.focus();
+                    ta.select();
+                    try { document.execCommand('copy'); } catch (_) {}
+                    document.body.removeChild(ta);
+                };
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(markCopied).catch(() => {
+                        fallbackCopy(text);
+                        markCopied();
+                    });
+                } else {
+                    fallbackCopy(text);
+                    markCopied();
+                }
             });
         });
     };
